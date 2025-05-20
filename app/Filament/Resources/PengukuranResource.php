@@ -32,6 +32,9 @@ class PengukuranResource extends Resource
 
     protected static ?string $navigationGroup = 'Manajemen Pengukuran';
 
+    protected static ?string $modelLabel = 'Data Pengukuran';
+    protected static ?string $pluralModelLabel = 'Data Pengukuran';
+
     protected static ?string $navigationIcon = 'heroicon-o-signal';
 
     protected static ?int $navigationSort = 1;
@@ -61,7 +64,7 @@ class PengukuranResource extends Resource
                                                 ->required(),
 
                                             DatePicker::make('tanggal')
-                                                ->label('Tanggal ISR')
+                                                ->label('Tanggal Pengukuran')
                                                 ->required(),
 
 
@@ -72,9 +75,9 @@ class PengukuranResource extends Resource
 
 
                         Tab::make('Stasiun Radio')->schema([
-                            
-                        
-                            Section::make('Stasiun Radio Baru')
+
+
+                            Section::make('Stasiun Radio (Studio)')
                                 ->relationship('stasiunRadio')
                                 ->schema([
                                     TextInput::make('nama_penyelenggara')
@@ -96,12 +99,12 @@ class PengukuranResource extends Resource
                                     TextInput::make('email')
                                         ->label('Email'),
                                 ])
-                               
+
                         ]),
-                        
+
                         Tab::make('Lokasi Pemancar')->schema([
-                           
-                        
+
+
                             Section::make('Lokasi Baru')
                                 ->relationship('lokasiPemancar')
                                 ->schema([
@@ -109,109 +112,109 @@ class PengukuranResource extends Resource
                                         ->label('Latitude')
                                         ->numeric()
                                         ->required(),
-                        
+
                                     TextInput::make('longitude')
                                         ->label('Longitude')
                                         ->numeric()
                                         ->required(),
-                        
+
                                     Textarea::make('alamat')
                                         ->label('Alamat')
                                         ->required(),
-                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('kelurahan')
                                             ->label('Kelurahan')
                                             ->required()
                                             ->maxLength(100),
-                        
+
                                         TextInput::make('kecamatan')
                                             ->label('Kecamatan')
                                             ->required()
                                             ->maxLength(100),
                                     ]),
-                        
+
                                     Select::make('location_id')
-                                    ->label('Kota (Location)')
-                                    ->relationship('location', 'kota') // opsional, hanya jika mau dari relasi
-                                    ->searchable()
-                                    ->preload()
-                                    ->required()
-                                    ->name('location_id'), // ini wajib biar Filament tahu field relasinya
-                                
-                        
+                                        ->label('Kota (Location)')
+                                        ->relationship('location', 'kota') // opsional, hanya jika mau dari relasi
+                                        ->searchable()
+                                        ->preload()
+                                        ->required()
+                                        ->name('location_id'), // ini wajib biar Filament tahu field relasinya
+
+
                                     TextInput::make('telp_fax')
                                         ->label('Telepon / Fax')
                                         ->maxLength(50),
-                        
+
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('tinggi_lokasi_mdpl')
                                             ->label('Tinggi Lokasi (mdpl)')
                                             ->numeric()
                                             ->required(),
-                        
+
                                         TextInput::make('tinggi_gedung_m')
                                             ->label('Tinggi Gedung (m)')
                                             ->numeric()
                                             ->required(),
-                        
+
                                         TextInput::make('tinggi_menara_m')
                                             ->label('Tinggi Menara (m)')
                                             ->numeric()
                                             ->required(),
                                     ]),
                                 ])
-                                
-                                ]),
-                        
-                        
-                                Tab::make('Perangkat Pemancar')->schema([
-                                    
-                                
-                                    Section::make('Perangkat Baru')
-                                        ->relationship('perangkatPemancar')
-                                        ->schema([
-                                            Forms\Components\Grid::make(2)->schema([
-                                                TextInput::make('merk')->required()->label('Merk'),
-                                                TextInput::make('jenis_type')->required()->label('Jenis / Type'),
-                                            ]),
-                                
-                                            TextInput::make('nomor_seri')->label('Nomor Seri')->maxLength(50)->required(),
-                                            TextInput::make('negara_pembuat')->label('Negara Pembuat')->required(),
-                                            TextInput::make('tahun_pembuat')->label('Tahun Pembuatan')->numeric()->minValue(1900)->maxValue(2100),
-                                
-                                            Forms\Components\Grid::make(3)->schema([
-                                                TextInput::make('frekuensi_mhz')->label('Frekuensi (MHz)')->numeric(),
-                                                TextInput::make('kelas_emisi')->label('Kelas Emisi')->maxLength(20),
-                                                TextInput::make('bandwidth_khz')->label('Bandwidth (kHz)')->numeric(),
-                                            ]),
-                                
-                                            Forms\Components\Grid::make(3)->schema([
-                                                TextInput::make('kedalaman_modulasi_percent')->label('Kedalaman Modulasi (%)')->numeric(),
-                                                TextInput::make('max_power_dbm')->label('Max Power (dBm)')->numeric(),
-                                                TextInput::make('gain_db')->label('Gain (dB)')->numeric(),
-                                            ]),
-                                
-                                            Forms\Components\Grid::make(2)->schema([
-                                                TextInput::make('jenis_antena')->label('Jenis Antena'), // pastikan ini sesuai DB (antenna, bukan antena)
-                                                TextInput::make('polarisasi')->label('Polarisasi'),
-                                            ]),
-                                
-                                            Forms\Components\Grid::make(3)->schema([
-                                                TextInput::make('jumlah_elemen_bay')->label('Jumlah Elemen (Bay)')->numeric(),
-                                                TextInput::make('beam_apr')->label('Beam Antena / Arah')->numeric(), // pastikan ini sesuai nama kolom DB
-                                                TextInput::make('panjang_kabel_m')->label('Panjang Kabel (m)')->numeric(),
-                                            ]),
-                                
-                                            Forms\Components\Grid::make(2)->schema([
-                                                TextInput::make('jenis_kabel_feeder')->label('Jenis Kabel / Feeder'),
-                                                TextInput::make('tipe_kabel')->label('Tipe Kabel'),
-                                            ]),
-                                        ])
-                                        
-                                        ]),
-                                
-                        
+
+                        ]),
+
+
+                        Tab::make('Perangkat Pemancar')->schema([
+
+
+                            Section::make('Perangkat Baru')
+                                ->relationship('perangkatPemancar')
+                                ->schema([
+                                    Forms\Components\Grid::make(2)->schema([
+                                        TextInput::make('merk')->required()->label('Merk'),
+                                        TextInput::make('jenis_type')->label('Jenis / Type'),
+                                    ]),
+
+                                    TextInput::make('nomor_seri')->label('Nomor Seri')->maxLength(50),
+                                    TextInput::make('negara_pembuat')->label('Negara Pembuat'),
+                                    TextInput::make('tahun_pembuat')->label('Tahun Pembuatan')->numeric()->minValue(1900)->maxValue(2100),
+
+                                    Forms\Components\Grid::make(3)->schema([
+                                        TextInput::make('frekuensi_mhz')->label('Frekuensi (MHz)')->numeric(),
+                                        TextInput::make('kelas_emisi')->label('Kelas Emisi')->maxLength(20),
+                                        TextInput::make('bandwidth_khz')->label('Bandwidth (kHz)')->numeric(),
+                                    ]),
+
+                                    Forms\Components\Grid::make(3)->schema([
+                                        TextInput::make('kedalaman_modulasi_percent')->label('Kedalaman Modulasi (%)')->numeric(),
+                                        TextInput::make('max_power_dbm')->label('Max Power (dBm)')->numeric(),
+                                        TextInput::make('gain_db')->label('Gain (dB)')->numeric(),
+                                    ]),
+
+                                    Forms\Components\Grid::make(2)->schema([
+                                        TextInput::make('jenis_antena')->label('Jenis Antena'), // pastikan ini sesuai DB (antenna, bukan antena)
+                                        TextInput::make('polarisasi')->label('Polarisasi'),
+                                    ]),
+
+                                    Forms\Components\Grid::make(3)->schema([
+                                        TextInput::make('jumlah_elemen_bay')->label('Jumlah Elemen (Bay)')->numeric(),
+                                        TextInput::make('beam_apr')->label('Beam Antena / Arah')->numeric(), // pastikan ini sesuai nama kolom DB
+                                        TextInput::make('panjang_kabel_m')->label('Panjang Kabel (m)')->numeric(),
+                                    ]),
+
+                                    Forms\Components\Grid::make(2)->schema([
+                                        TextInput::make('jenis_kabel_feeder')->label('Jenis Kabel / Feeder'),
+                                        TextInput::make('tipe_kabel')->label('Tipe Kabel'),
+                                    ]),
+                                ])
+
+                        ]),
+
+
                         Tab::make('Pengukuran Frekuensi')->schema([
                             Section::make('Pengukuran Frekuensi')
                                 ->relationship('pengukuranFrekuensi')
@@ -221,42 +224,50 @@ class PengukuranResource extends Resource
                                         TextInput::make('frekuensi_terukur_mhz')->label('Frekuensi Terukur (MHz)')->numeric()->required(),
                                         TextInput::make('level_dbm')->label('Level (dBm)')->numeric()->required(),
                                     ]),
-                        
+
+                                    Select::make('location_id')
+    ->label('Lokasi (Kota)')
+    ->relationship('location', 'kota')
+    ->searchable()
+    ->preload()
+    ->required(), // atau ->nullable() kalau boleh kosong
+                                    
+
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('bandwidth_khz')->label('Bandwidth (kHz)')->numeric(),
                                         TextInput::make('field_strength_dbuvm')->label('Field Strength (dBµV/m)')->numeric(),
                                         TextInput::make('deviasi_frekuensi_khz')->label('Deviasi Frekuensi (kHz)')->numeric(),
                                     ]),
-                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('kedalaman_modulasi_percent')->label('Kedalaman Modulasi (%)')->numeric(),
                                         TextInput::make('output_power_tx')->label('Output Power TX')->numeric(),
                                     ]),
-                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('cable_loss')->label('Cable Loss')->numeric(),
                                         TextInput::make('alamat')->label('Alamat')->required(),
                                     ]),
-                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('latitude')->numeric()->required(),
                                         TextInput::make('longitude')->numeric()->required(),
                                     ]),
-                        
+
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('frekuensi_h1_mhz')->label('Frekuensi H1 (MHz)')->numeric(),
                                         TextInput::make('level_h1_dbm')->label('Level H1 (dBm)')->numeric(),
                                         TextInput::make('frekuensi_h2_mhz')->label('Frekuensi H2 (MHz)')->numeric(),
                                     ]),
-                        
+
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('level_h2_dbm')->label('Level H2 (dBm)')->numeric(),
                                         TextInput::make('frekuensi_h3_mhz')->label('Frekuensi H3 (MHz)')->numeric(),
                                         TextInput::make('level_h3_dbm')->label('Level H3 (dBm)')->numeric(),
-                                     ]),
+                                    ]),
                                 ])
-                                ]),
-                        
+                        ]),
+
                         Tab::make('Pengukuran Studio')->schema([
                             Section::make('Studio to Transmitter Link (STL)')
                                 ->relationship('pengukuranStudio')
@@ -264,49 +275,49 @@ class PengukuranResource extends Resource
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('jenis_stl')
                                             ->label('Jenis STL')
-                                            ->required()
+                                            
                                             ->maxLength(100),
-                        
+
                                         TextInput::make('no_spt')
                                             ->label('Nomor SPT')
                                             ->required()
                                             ->maxLength(50),
                                     ]),
-                        
+
                                     DatePicker::make('tgl_spt')
                                         ->label('Tanggal SPT')
                                         ->required(),
-                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('jenis_sbk')
                                             ->label('Jenis SBK')
-                                            ->required()
+                                            
                                             ->maxLength(100),
-                        
+
                                         TextInput::make('kecamatan')
                                             ->label('Kecamatan')
-                                            ->required()
+                                            
                                             ->maxLength(100),
                                     ]),
-                        
+
                                     Textarea::make('jalan')
-                                        ->label('Alamat / Jalan')
-                                        ->required(),
-                        
+                                        ->label('Alamat / Jalan'),
+                                        
+
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('merk_alat_ukur')
                                             ->label('Merk Alat Ukur')
-                                            ->maxLength(100)
-                                            ->required(),
-                        
+                                            ->maxLength(100),
+                                            
+
                                         TextInput::make('tipe_alat_ukur')
                                             ->label('Tipe Alat Ukur')
-                                            ->maxLength(100)
-                                            ->required(),
+                                            ->maxLength(100),
+                                            
                                     ]),
                                 ])
                         ])
-                        
+
                     ])
                     ->columnSpanFull(),
             ]);

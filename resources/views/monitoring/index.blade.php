@@ -593,9 +593,7 @@
 </head>
 
 <body class="bg-gradient-to-br from-[#e0f2fe] to-[#DFF9FF]">
-  <div class="loading-animation">
-    <div class="spinner"></div>
-  </div>
+  
 
   <!-- HEADER -->
   <header
@@ -1094,257 +1092,259 @@
 
   <!-- Script -->
   <script>
-    // Toggle Sidebar
-    const sidebar = document.getElementById('sidebar');
-    const toggleButton = document.getElementById('toggleSidebar');
+  // Toggle Sidebar
+  const sidebar = document.getElementById('sidebar');
+  const toggleButton = document.getElementById('toggleSidebar');
 
-    toggleButton.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-    });
+  toggleButton.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+  });
 
-    document.addEventListener('click', (event) => {
-      if (window.innerWidth < 768) {
-        const isClickInside = sidebar.contains(event.target);
-        const isToggleButton = toggleButton.contains(event.target);
-        if (!isClickInside && !isToggleButton && !sidebar.classList.contains('-translate-x-full')) {
-          sidebar.classList.add('-translate-x-full');
-        }
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
+  document.addEventListener('click', (event) => {
+    if (window.innerWidth < 768) {
+      const isClickInside = sidebar.contains(event.target);
+      const isToggleButton = toggleButton.contains(event.target);
+      if (!isClickInside && !isToggleButton && !sidebar.classList.contains('-translate-x-full')) {
         sidebar.classList.add('-translate-x-full');
       }
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) {
+      sidebar.classList.remove('-translate-x-full');
+    } else {
+      sidebar.classList.add('-translate-x-full');
+    }
+  });
+
+  // --- MAIN FUNCTIONALITY (Map, Marker, Table, Filter) ---
+  document.addEventListener("DOMContentLoaded", function () {
+    // Map & Table Toggle
+    const mapContainer = document.getElementById("mapContainer");
+    const tableContainer = document.getElementById("tableContainer");
+    const showMapBtn = document.getElementById("showMap");
+    const showTableBtn = document.getElementById("showTable");
+
+    // Inisialisasi map Leaflet
+    const map = L.map('map', {
+      center: [-6.9147, 107.6098],
+      zoom: 8,
+      zoomControl: false,
+      maxBounds: [
+        [-8.2, 105.0],
+        [-5.8, 109.0]
+      ],
+      maxBoundsViscosity: 1.0
     });
 
-    // Filter untuk tabel
-    document.addEventListener("DOMContentLoaded", function () {
-      const filterKota = document.getElementById("filterKota");
-      const filterTahun = document.getElementById("filterTahun");
-      const filterUPT = document.getElementById("filterUPT");
-      const monitoringRows = document.querySelectorAll("#tableContainer tbody tr");
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-      function applyFilters() {
-        const selectedKota = filterKota.value.toLowerCase().trim();
-        const selectedTahun = filterTahun.value.trim();
-        const selectedUPT = filterUPT.value.toLowerCase().trim();
+    // Ambil data dari backend
+    var monitoringData = {!! json_encode($monitoring, JSON_HEX_TAG) !!};
 
-        monitoringRows.forEach(row => {
-          const kota = row.cells[3].textContent.toLowerCase().trim();
-          const tanggal = row.cells[2].textContent.trim();
-          const tahun = tanggal.substring(6, 10); // Format tanggal dd-mm-yyyy
-          const upt = row.cells[0].textContent.toLowerCase().trim();
-          
-          const kotaMatch = selectedKota === "" || kota.includes(selectedKota);
-          const tahunMatch = selectedTahun === "" || tahun === selectedTahun;
-          const uptMatch = selectedUPT === "" || upt.includes(selectedUPT);
-          
-          row.style.display = (kotaMatch && tahunMatch && uptMatch) ? "" : "none";
+    // Buat marker & simpan di array
+    const allMarkers = [];
+    monitoringData.forEach(item => {
+      if (item.lat && item.lng) {
+        const marker = L.marker([item.lat, item.lng]);
+        marker.on('click', function () {
+          showDetail(
+            item.upt,
+            item.stasiun_monitor,
+            new Date(item.tanggal).toLocaleDateString('id-ID'),
+            item.kab_kota,
+            item.alamat,
+            item.lat,
+            item.lng,
+            item.no_spt,
+            item.isrmon_jumlah_isr,
+            item.isrmon_target,
+            item.isrmon_termonitor,
+            item.isrmon_capaian,
+            item.target_pita,
+            item.occ_target_pita,
+            item.occ_capaian,
+            item.iden_jumlah_termonitor,
+            item.iden_target,
+            item.iden_teridentifikasi,
+            item.iden_capaian,
+            item.capaian_pk_obs,
+            item.catatan
+          );
+        });
+        // Tambahkan marker ke map (nanti akan difilter, sekarang biarkan muncul semua dulu)
+        marker.addTo(map);
+        allMarkers.push({
+          marker,
+          tahun: new Date(item.tanggal).getFullYear().toString()
         });
       }
-
-      filterKota.addEventListener("change", applyFilters);
-      filterTahun.addEventListener("change", applyFilters);
-      filterUPT.addEventListener("change", applyFilters);
-      applyFilters();
     });
 
-    // Map & Table Toggle
-    document.addEventListener("DOMContentLoaded", function () {
-      const mapContainer = document.getElementById("mapContainer");
-      const tableContainer = document.getElementById("tableContainer");
-      const showMapBtn = document.getElementById("showMap");
-      const showTableBtn = document.getElementById("showTable");
+    setTimeout(() => map.invalidateSize(), 100);
+    window.addEventListener('resize', () => {
+      map.invalidateSize();
+    });
 
-      // Inisialisasi map Leaflet
-      const map = L.map('map', {
-        center: [-6.9147, 107.6098],
-        zoom: 8,
-        zoomControl: false,
-        maxBounds: [
-          [-8.2, 105.0],
-          [-5.8, 109.0]
-        ],
-        maxBoundsViscosity: 1.0
-      });
+    function hideAllContainers() {
+      mapContainer.classList.add("hidden");
+      tableContainer.classList.add("hidden");
+    }
 
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
-      var monitoringData = {!! json_encode($monitoring, JSON_HEX_TAG) !!};
-
-      monitoringData.forEach(item => {
-        if (item.lat && item.lng) {
-          const marker = L.marker([item.lat, item.lng]).addTo(map);
-          
-          // Tambahkan event listener pada marker untuk membuka modal detail
-          marker.on('click', function () {
-            showDetail(
-              item.upt,
-              item.stasiun_monitor,
-              new Date(item.tanggal).toLocaleDateString('id-ID'),
-              item.kab_kota,
-              item.alamat,
-              item.lat,
-              item.lng,
-              item.no_spt,
-              item.isrmon_jumlah_isr,
-              item.isrmon_target,
-              item.isrmon_termonitor,
-              item.isrmon_capaian,
-              item.target_pita,
-              item.occ_target_pita,
-              item.occ_capaian,
-              item.iden_jumlah_termonitor,
-              item.iden_target,
-              item.iden_teridentifikasi,
-              item.iden_capaian,
-              item.capaian_pk_obs,
-              item.catatan
-            );
-          });
-        }
-      });
-
-      setTimeout(() => map.invalidateSize(), 100);
-      window.addEventListener('resize', () => {
-        map.invalidateSize();
-      });
-
-      function hideAllContainers() {
-        mapContainer.classList.add("hidden");
-        tableContainer.classList.add("hidden");
-      }
-
-      showMapBtn.addEventListener("click", () => {
-        hideAllContainers();
-        mapContainer.classList.remove("hidden");
-        setTimeout(() => {
-          map.invalidateSize();
-        }, 200);
-        
-        // Update warna tombol
-        showMapBtn.style.backgroundColor = "#EDBC1B";   // aktif
-        showTableBtn.style.backgroundColor = "#006DB0";   // tidak aktif
-      });
-
-      showTableBtn.addEventListener("click", () => {
-        hideAllContainers();
-        tableContainer.classList.remove("hidden");
-        
-        // Update warna tombol
-        showTableBtn.style.backgroundColor = "#EDBC1B";    // aktif
-        showMapBtn.style.backgroundColor = "#006DB0";      // tidak aktif
-      });
-
-      // Default tampilkan map
+    showMapBtn.addEventListener("click", () => {
       hideAllContainers();
       mapContainer.classList.remove("hidden");
-    });
-
-    // Hilangkan loading animation
-    document.addEventListener("DOMContentLoaded", function () {
       setTimeout(() => {
-        document.querySelector(".loading-animation").style.display = "none";
-      }, 500);
+        map.invalidateSize();
+      }, 200);
+
+      // Update warna tombol
+      showMapBtn.style.backgroundColor = "#EDBC1B";   // aktif
+      showTableBtn.style.backgroundColor = "#006DB0";   // tidak aktif
     });
 
-    // Fungsi untuk menampilkan modal detail
-    function showDetail(
-      upt,
-      stasiunMonitor,
-      tanggal,
-      kabKota,
-      alamat,
-      lat,
-      lng,
-      noSPT,
-      isrmonJumlahIsr,
-      isrmonTarget,
-      isrmonTerMonitor,
-      isrmonCapaian,
-      targetPita,
-      occTargetPita,
-      occCapaian,
-      idenJumlahTerMonitor,
-      idenTarget,
-      idenTerIdentifikasi,
-      idenCapaian,
-      capaianPkObs,
-      catatan
-    ) {
-      // Informasi Dasar
-      document.getElementById('modalUPT').innerText = upt || 'N/A';
-      document.getElementById('modalStasiunMonitor').innerText = stasiunMonitor || 'N/A';
-      document.getElementById('modalNoSPT').innerText = noSPT || 'N/A';
-      document.getElementById('modalTanggal').innerText = tanggal || 'N/A';
-      document.getElementById('modalKabKota').innerText = kabKota || 'N/A';
-      document.getElementById('modalAlamat').innerText = alamat || 'N/A';
-      document.getElementById('modalKoordinat').innerText = (lat && lng) ? (lat + ", " + lng) : 'N/A';
-      
-      // Capaian PK OBS
-      document.getElementById('modalCapaianPKOBS').innerText = capaianPkObs + '%' || 'N/A';
-      
-      const pkObsClass = capaianPkObs >= 80 ? 'High' : (capaianPkObs >= 50 ? 'Medium' : 'Low');
-      document.getElementById('modalCapaianPKOBSBadge').innerText = capaianPkObs + '%';
-      document.getElementById('modalCapaianPKOBSBadge').className = 'capaian-badge ' + pkObsClass;
-      
-      const pkObsBarClass = capaianPkObs >= 80 ? 'high' : (capaianPkObs >= 50 ? 'medium' : 'low');
-      document.getElementById('modalCapaianPKOBSBar').className = 'progress-bar ' + pkObsBarClass;
-            document.getElementById('modalCapaianPKOBSBar').style.width = capaianPkObs + '%';
-      
-      // ISR Monitoring
-      document.getElementById('modalISRJumlah').innerText = isrmonJumlahIsr || '0';
-      document.getElementById('modalISRTarget').innerText = isrmonTarget || '0';
-      document.getElementById('modalISRTerMonitor').innerText = isrmonTerMonitor || '0';
-      
-      const isrCapaianClass = isrmonCapaian >= 80 ? 'High' : (isrmonCapaian >= 50 ? 'Medium' : 'Low');
-      document.getElementById('modalISRCapaianBadge').innerText = isrmonCapaian + '%';
-      document.getElementById('modalISRCapaianBadge').className = 'capaian-badge ' + isrCapaianClass;
-      
-      const isrBarClass = isrmonCapaian >= 80 ? 'high' : (isrmonCapaian >= 50 ? 'medium' : 'low');
-      document.getElementById('modalISRCapaianBar').className = 'progress-bar ' + isrBarClass;
-      document.getElementById('modalISRCapaianBar').style.width = isrmonCapaian + '%';
-      
-      // Occupancy
-      document.getElementById('modalTargetPita').innerText = targetPita || '0';
-      document.getElementById('modalOCCTargetPita').innerText = occTargetPita || '0';
-      
-      const occCapaianClass = occCapaian >= 80 ? 'High' : (occCapaian >= 50 ? 'Medium' : 'Low');
-      document.getElementById('modalOCCCapaianBadge').innerText = occCapaian + '%';
-      document.getElementById('modalOCCCapaianBadge').className = 'capaian-badge ' + occCapaianClass;
-      
-      const occBarClass = occCapaian >= 80 ? 'high' : (occCapaian >= 50 ? 'medium' : 'low');
-      document.getElementById('modalOCCCapaianBar').className = 'progress-bar ' + occBarClass;
-      document.getElementById('modalOCCCapaianBar').style.width = occCapaian + '%';
-      
-      // Identifikasi
-      document.getElementById('modalIDENJumlahTerMonitor').innerText = idenJumlahTerMonitor || '0';
-      document.getElementById('modalIDENTarget').innerText = idenTarget || '0';
-      document.getElementById('modalIDENTerIdentifikasi').innerText = idenTerIdentifikasi || '0';
-      
-      const idenCapaianClass = idenCapaian >= 80 ? 'High' : (idenCapaian >= 50 ? 'Medium' : 'Low');
-      document.getElementById('modalIDENCapaianBadge').innerText = idenCapaian + '%';
-      document.getElementById('modalIDENCapaianBadge').className = 'capaian-badge ' + idenCapaianClass;
-      
-      const idenBarClass = idenCapaian >= 80 ? 'high' : (idenCapaian >= 50 ? 'medium' : 'low');
-      document.getElementById('modalIDENCapaianBar').className = 'progress-bar ' + idenBarClass;
-      document.getElementById('modalIDENCapaianBar').style.width = idenCapaian + '%';
-      
-      // Catatan
-      document.getElementById('modalCatatan').innerText = catatan || 'Tidak ada catatan';
+    showTableBtn.addEventListener("click", () => {
+      hideAllContainers();
+      tableContainer.classList.remove("hidden");
 
-      document.getElementById('detailModal').classList.remove('hidden');
+      // Update warna tombol
+      showTableBtn.style.backgroundColor = "#EDBC1B";    // aktif
+      showMapBtn.style.backgroundColor = "#006DB0";      // tidak aktif
+    });
+
+    // Default tampilkan map
+    hideAllContainers();
+    mapContainer.classList.remove("hidden");
+
+    // === FILTER TABLE + MAP ===
+    const filterTahun = document.getElementById("filterTahun");
+    const monitoringRows = document.querySelectorAll("#tableContainer tbody tr");
+
+    function applyFilters() {
+      const selectedTahun = filterTahun.value.trim();
+
+      // 1) Filter baris tabel
+      monitoringRows.forEach(row => {
+        const tahunRow = row.cells[2].textContent.trim().slice(-4); // dd-mm-YYYY
+        row.style.display = (!selectedTahun || tahunRow === selectedTahun)
+          ? "" : "none";
+      });
+
+      // 2) Filter marker di map
+      allMarkers.forEach(({ marker, tahun }) => {
+        if (!selectedTahun || tahun === selectedTahun) {
+          // tampilkan
+          if (!map.hasLayer(marker)) map.addLayer(marker);
+        } else {
+          // sembunyikan
+          if (map.hasLayer(marker)) map.removeLayer(marker);
+        }
+      });
     }
 
-    function closeModal() {
-      document.getElementById('detailModal').classList.add('hidden');
-    }
-  </script>
+    filterTahun.addEventListener("change", applyFilters);
+
+    // Apply filter pertama kali (biar sinkron awal)
+    applyFilters();
+  });
+
+  // --- Modal Show/Close (tidak diubah) ---
+  function showDetail(
+    upt,
+    stasiunMonitor,
+    tanggal,
+    kabKota,
+    alamat,
+    lat,
+    lng,
+    noSPT,
+    isrmonJumlahIsr,
+    isrmonTarget,
+    isrmonTerMonitor,
+    isrmonCapaian,
+    targetPita,
+    occTargetPita,
+    occCapaian,
+    idenJumlahTerMonitor,
+    idenTarget,
+    idenTerIdentifikasi,
+    idenCapaian,
+    capaianPkObs,
+    catatan
+  ) {
+    // ... fungsi showDetail tidak berubah ...
+    document.getElementById('modalUPT').innerText = upt || 'N/A';
+    document.getElementById('modalStasiunMonitor').innerText = stasiunMonitor || 'N/A';
+    document.getElementById('modalNoSPT').innerText = noSPT || 'N/A';
+    document.getElementById('modalTanggal').innerText = tanggal || 'N/A';
+    document.getElementById('modalKabKota').innerText = kabKota || 'N/A';
+    document.getElementById('modalAlamat').innerText = alamat || 'N/A';
+    document.getElementById('modalKoordinat').innerText = (lat && lng) ? (lat + ", " + lng) : 'N/A';
+
+    // ... sisanya tidak berubah ...
+    // [copy-paste yang bagian showDetail dari kode kamu di atas]
+    document.getElementById('modalCapaianPKOBS').innerText = capaianPkObs + '%' || 'N/A';
+
+    const pkObsClass = capaianPkObs >= 80 ? 'High' : (capaianPkObs >= 50 ? 'Medium' : 'Low');
+    document.getElementById('modalCapaianPKOBSBadge').innerText = capaianPkObs + '%';
+    document.getElementById('modalCapaianPKOBSBadge').className = 'capaian-badge ' + pkObsClass;
+
+    const pkObsBarClass = capaianPkObs >= 80 ? 'high' : (capaianPkObs >= 50 ? 'medium' : 'low');
+    document.getElementById('modalCapaianPKOBSBar').className = 'progress-bar ' + pkObsBarClass;
+    document.getElementById('modalCapaianPKOBSBar').style.width = capaianPkObs + '%';
+
+    // ISR Monitoring
+    document.getElementById('modalISRJumlah').innerText = isrmonJumlahIsr || '0';
+    document.getElementById('modalISRTarget').innerText = isrmonTarget || '0';
+    document.getElementById('modalISRTerMonitor').innerText = isrmonTerMonitor || '0';
+
+    const isrCapaianClass = isrmonCapaian >= 80 ? 'High' : (isrmonCapaian >= 50 ? 'Medium' : 'Low');
+    document.getElementById('modalISRCapaianBadge').innerText = isrmonCapaian + '%';
+    document.getElementById('modalISRCapaianBadge').className = 'capaian-badge ' + isrCapaianClass;
+
+    const isrBarClass = isrmonCapaian >= 80 ? 'high' : (isrmonCapaian >= 50 ? 'medium' : 'low');
+    document.getElementById('modalISRCapaianBar').className = 'progress-bar ' + isrBarClass;
+    document.getElementById('modalISRCapaianBar').style.width = isrmonCapaian + '%';
+
+    // Occupancy
+    document.getElementById('modalTargetPita').innerText = targetPita || '0';
+    document.getElementById('modalOCCTargetPita').innerText = occTargetPita || '0';
+
+    const occCapaianClass = occCapaian >= 80 ? 'High' : (occCapaian >= 50 ? 'Medium' : 'Low');
+    document.getElementById('modalOCCCapaianBadge').innerText = occCapaian + '%';
+    document.getElementById('modalOCCCapaianBadge').className = 'capaian-badge ' + occCapaianClass;
+
+    const occBarClass = occCapaian >= 80 ? 'high' : (occCapaian >= 50 ? 'medium' : 'low');
+    document.getElementById('modalOCCCapaianBar').className = 'progress-bar ' + occBarClass;
+    document.getElementById('modalOCCCapaianBar').style.width = occCapaian + '%';
+
+    // Identifikasi
+    document.getElementById('modalIDENJumlahTerMonitor').innerText = idenJumlahTerMonitor || '0';
+    document.getElementById('modalIDENTarget').innerText = idenTarget || '0';
+    document.getElementById('modalIDENTerIdentifikasi').innerText = idenTerIdentifikasi || '0';
+
+    const idenCapaianClass = idenCapaian >= 80 ? 'High' : (idenCapaian >= 50 ? 'Medium' : 'Low');
+    document.getElementById('modalIDENCapaianBadge').innerText = idenCapaian + '%';
+    document.getElementById('modalIDENCapaianBadge').className = 'capaian-badge ' + idenCapaianClass;
+
+    const idenBarClass = idenCapaian >= 80 ? 'high' : (idenCapaian >= 50 ? 'medium' : 'low');
+    document.getElementById('modalIDENCapaianBar').className = 'progress-bar ' + idenBarClass;
+    document.getElementById('modalIDENCapaianBar').style.width = idenCapaian + '%';
+
+    // Catatan
+    document.getElementById('modalCatatan').innerText = catatan || 'Tidak ada catatan';
+
+    document.getElementById('detailModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('detailModal').classList.add('hidden');
+  }
+</script>
+
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>

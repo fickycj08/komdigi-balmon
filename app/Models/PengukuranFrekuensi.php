@@ -45,6 +45,7 @@ class PengukuranFrekuensi extends Model
         'tanggal_pengukuran',
         'foto_pengukuran',
         'dokumen_pendukung',
+         'location_id',
     ];
 
     protected $casts = [
@@ -109,5 +110,11 @@ class PengukuranFrekuensi extends Model
     {
         return $this->belongsTo(PengukuranStudio::class);
     }
+
+    public function location()
+{
+    return $this->belongsTo(Location::class, 'location_id');
+}
+
     
 }

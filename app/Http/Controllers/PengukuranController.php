@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pengukuran;
 use App\Models\LokasiPemancar;
+use App\Models\Location; // 
 
 class PengukuranController extends Controller
 {
@@ -19,8 +20,19 @@ class PengukuranController extends Controller
             'pengukuranStudio',
         ])->get();
 
+        // Ambil nama kota unik, diurutkan alfabet
+    $kotaList = Location::select('kota')
+        ->distinct()
+        ->orderBy('kota')
+        ->pluck('kota');  // koleksi string
+
+    // ambil data pengukuran seperti biasa
+    $pengukurans = Pengukuran::with('lokasiPemancar', 'data_isr')
+        ->latest()
+        ->get();
+
         $lokasiPemancars = LokasiPemancar::all();
 
-        return view('pengukuran.index', compact('pengukurans', 'lokasiPemancars'));
+        return view('pengukuran.index', compact('pengukurans', 'lokasiPemancars', 'kotaList'));
     }
 }

@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Tabs;
+use App\Models\Location;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
@@ -47,15 +48,58 @@ class MonitoringResource extends Resource
                                     ->schema([
                                         Grid::make(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('upt')
+                                                Forms\Components\Select::make('upt_select')
                                                     ->label('UPT')
+                                                    ->options([
+                                                        'Balai Monitor SFR Kelas I Bandung' => 'Balai Monitor SFR Kelas I Bandung',
+                                                        'manual' => 'Lainnya (Isi Manual)'
+                                                    ])
                                                     ->required()
-                                                    ->maxLength(100),
-                                                Forms\Components\TextInput::make('stasiun_monitor')
+                                                    ->reactive()
+                                                    ->afterStateUpdated(function ($state, $set) {
+                                                        if ($state !== 'manual') {
+                                                            $set('upt', $state); // Isi upt dengan nilai dari select
+                                                        } else {
+                                                            $set('upt', null); // Kosongin upt kalau manual, biar user isi sendiri
+                                                        }
+                                                    })
+                                                    ->afterStateHydrated(function ($set, $get) {
+                                                        $upt = $get('upt'); // Ambil nilai upt dari model
+                                                        if (in_array($upt, ['Balai Monitor SFR Kelas I Bandung'])) {
+                                                            $set('upt_select', $upt); // Set ke opsi predefined kalau cocok
+                                                        } else {
+                                                            $set('upt_select', 'manual'); // Set ke manual kalau nilai custom
+                                                        }
+                                                    }),
+
+                                                Forms\Components\TextInput::make('upt')
+                                                    ->label('UPT (Manual)')
+                                                    ->maxLength(100)
+                                                    ->placeholder('Isi manual jika tidak ada di daftar')
+                                                    ->required(fn($get) => $get('upt_select') === 'manual')
+                                                    ->hidden(fn($get) => $get('upt_select') !== 'manual')
+                                                    ->dehydrated() // Tetep dehydrated supaya selalu dikirim
+                                                    ->helperText('Akan otomatis terisi jika memilih dari daftar.'),
+
+
+                                                Forms\Components\Select::make('stasiun_monitor')
                                                     ->label('Stasiun Monitor')
                                                     ->required()
-                                                    ->maxLength(50),
+                                                    ->options([
+                                                        'Bergerak' => 'Bergerak',
+                                                        'Tetep Cileunyi' => 'Tetep Cileunyi',
+                                                        'Tetap Cigondewah' => 'Tetap Cigondewah',
+                                                        'Tetap Lembang' => 'Tetap Lembang',
+                                                        'Transportable Indramayu' => 'Transportable Indramayu',
+                                                        'Transportable Karawang' => 'Transportable Karawang',
+                                                        'Trasportable Cirebon' => 'Trasportable Cirebon',
+                                                        'Transportable Tasikmalaya' => 'Transportable Tasikmalaya',
+                                                    ])
+                                                    ->searchable()
+                                                    ->preload(), // opsional, biar dropdown langsung tampil semua
+
                                             ]),
+
                                         Grid::make(2)
                                             ->schema([
                                                 Forms\Components\DatePicker::make('tanggal')
@@ -68,10 +112,14 @@ class MonitoringResource extends Resource
                                             ]),
                                         Grid::make(2)
                                             ->schema([
-                                                Forms\Components\TextInput::make('kab_kota')
+                                                Forms\Components\Select::make('location_id')
                                                     ->label('Kabupaten/Kota')
-                                                    ->required()
-                                                    ->maxLength(100),
+                                                    ->options(
+                                                        Location::query()->whereNotNull('kota')->pluck('kota', 'id')
+                                                    )
+                                                    ->searchable()
+                                                    ->required(),
+
                                                 Forms\Components\TextInput::make('alamat')
                                                     ->label('Alamat Lengkap')
                                                     ->maxLength(100),
@@ -106,26 +154,65 @@ class MonitoringResource extends Resource
                                                 Forms\Components\TextInput::make('isrmon_jumlah_isr')
                                                     ->label('Jumlah ISR')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->reactive(),
+
                                                 Forms\Components\TextInput::make('isrmon_target')
                                                     ->label('Target ISR')
                                                     ->numeric()
-                                                    ->default(0),
-                                            ]),
-                                        Grid::make(2)
-                                            ->schema([
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $target = $state ?? 0;
+                                                        $termonitor = $get('isrmon_termonitor') ?? 0;
+                                                        $isrCapaian = ($target == 0) ? 0 : min(round(($termonitor / $target) * 100, 2), 100);
+                                                        $set('isrmon_capaian', $isrCapaian);
+                                                        // Update capaian_pk_obs
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                                 Forms\Components\TextInput::make('isrmon_termonitor')
                                                     ->label('Termonitor')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $termonitor = $state ?? 0;
+                                                        $target = $get('isrmon_target') ?? 0;
+                                                        $isrCapaian = ($target == 0) ? 0 : min(round(($termonitor / $target) * 100, 2), 100);
+                                                        $set('isrmon_capaian', $isrCapaian);
+                                                        // Update capaian_pk_obs
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                                 Forms\Components\TextInput::make('isrmon_capaian')
                                                     ->label('Capaian (%)')
+                                                    ->disabled()
+                                                    ->dehydrated(true)
                                                     ->numeric()
                                                     ->default(0)
-                                                    
+                                                    ->reactive()
+                                                    ->dehydrateStateUsing(function ($state, $get) {
+                                                        $target = $get('isrmon_target') ?? 0;
+                                                        $termonitor = $get('isrmon_termonitor') ?? 0;
+                                                        if ($target == 0)
+                                                            return 0;
+                                                        return min(round(($termonitor / $target) * 100, 2), 100); // Maks 100%
+                                                    })
+                                                    ->afterStateHydrated(function ($state, $set, $get) {
+                                                        $target = $get('isrmon_target') ?? 0;
+                                                        $termonitor = $get('isrmon_termonitor') ?? 0;
+                                                        if ($target == 0)
+                                                            $set('isrmon_capaian', 0);
+                                                        else
+                                                            $set('isrmon_capaian', min(round(($termonitor / $target) * 100, 2), 100));
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                             ]),
                                     ]),
                             ]),
+
                         Tabs\Tab::make('Data Target Pita')
                             ->icon('heroicon-o-chart-pie')
                             ->schema([
@@ -139,19 +226,63 @@ class MonitoringResource extends Resource
                                                 Forms\Components\TextInput::make('target_pita')
                                                     ->label('Target Pita')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $target = $state ?? 0;
+                                                        $occ = $get('occ_target_pita') ?? 0;
+                                                        $occCapaian = ($target == 0) ? 0 : min(round(($occ / $target) * 100, 2), 100);
+                                                        $set('occ_capaian', $occCapaian);
+                                                        // Update capaian_pk_obs
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                                 Forms\Components\TextInput::make('occ_target_pita')
                                                     ->label('Occ Target Pita')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $occ = $state ?? 0;
+                                                        $target = $get('target_pita') ?? 0;
+                                                        $occCapaian = ($target == 0) ? 0 : min(round(($occ / $target) * 100, 2), 100);
+                                                        $set('occ_capaian', $occCapaian);
+                                                        // Update capaian_pk_obs
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                                 Forms\Components\TextInput::make('occ_capaian')
-                                                    ->label('OCC Capaian')
-                                                    ->numeric() 
-                                                    ->default(0),
+                                                    ->label('OCC Capaian (%)')
+                                                    ->disabled()
+                                                    ->dehydrated(true)
+                                                    ->numeric()
+                                                    ->default(0)
+                                                    ->reactive()
+                                                    ->dehydrateStateUsing(function ($state, $get) {
+                                                        // Hitung ulang setiap submit/save
+                                                        $target = $get('target_pita') ?? 0;
+                                                        $occ = $get('occ_target_pita') ?? 0;
+                                                        if ($target == 0) {
+                                                            return 0;
+                                                        }
+                                                        return min(round(($occ / $target) * 100, 2), 100);
+                                                    })
+                                                    ->afterStateHydrated(function ($state, $set, $get) {
+                                                        // Hitung ulang setelah di-load atau diubah
+                                                        $target = $get('target_pita') ?? 0;
+                                                        $occ = $get('occ_target_pita') ?? 0;
+                                                        $value = ($target == 0) ? 0 : min(round(($occ / $target) * 100, 2), 100);
+                                                        $set('occ_capaian', $value);
+
+                                                        // Panggil juga updateCapaianPkObs untuk update PK rata-rata
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                             ]),
-                                                    
                                     ]),
                             ]),
+
+
                         Tabs\Tab::make('Data Identifikasi')
                             ->icon('heroicon-o-identification')
                             ->schema([
@@ -166,25 +297,69 @@ class MonitoringResource extends Resource
                                                     ->label('Jumlah Termonitor')
                                                     ->numeric()
                                                     ->default(0),
+
                                                 Forms\Components\TextInput::make('iden_target')
                                                     ->label('Target')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $target = $state ?? 0;
+                                                        $teridentifikasi = $get('iden_teridentifikasi') ?? 0;
+                                                        $idenCapaian = ($target == 0) ? 0 : min(round(($teridentifikasi / $target) * 100, 2), 100);
+                                                        $set('iden_capaian', $idenCapaian);
+                                                        // Update capaian_pk_obs juga
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
                                             ]),
                                         Grid::make(2)
                                             ->schema([
                                                 Forms\Components\TextInput::make('iden_teridentifikasi')
                                                     ->label('Teridentifikasi')
                                                     ->numeric()
-                                                    ->default(0),
+                                                    ->default(0)
+                                                    ->live(debounce: 500)
+                                                    ->afterStateUpdated(function ($state, $set, $get) {
+                                                        $teridentifikasi = $state ?? 0;
+                                                        $target = $get('iden_target') ?? 0;
+                                                        $idenCapaian = ($target == 0) ? 0 : min(round(($teridentifikasi / $target) * 100, 2), 100);
+                                                        $set('iden_capaian', $idenCapaian);
+                                                        // Update capaian_pk_obs juga
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                                 Forms\Components\TextInput::make('iden_capaian')
-                                                    ->label('Capaian')
+                                                    ->label('Capaian (%)')
+                                                    ->disabled()
+                                                    ->dehydrated(true)
                                                     ->numeric()
-                                                    ->default(0),
-                                                    
+                                                    ->default(0)
+                                                    ->reactive()
+                                                    ->dehydrateStateUsing(function ($state, $get) {
+                                                        // Pastikan perhitungan konsisten pada saat submit
+                                                        $target = $get('iden_target') ?? 0;
+                                                        $teridentifikasi = $get('iden_teridentifikasi') ?? 0;
+                                                        if ($target == 0) {
+                                                            return 0;
+                                                        }
+                                                        return min(round(($teridentifikasi / $target) * 100, 2), 100);
+                                                    })
+                                                    ->afterStateHydrated(function ($state, $set, $get) {
+                                                        // Saat form dibuka/diupdate, isi ulang nilainya
+                                                        $target = $get('iden_target') ?? 0;
+                                                        $teridentifikasi = $get('iden_teridentifikasi') ?? 0;
+                                                        $value = ($target == 0) ? 0 : min(round(($teridentifikasi / $target) * 100, 2), 100);
+                                                        $set('iden_capaian', $value);
+
+                                                        // Selalu update capaian_pk_obs biar konsisten
+                                                        self::updateCapaianPkObs($set, $get);
+                                                    }),
+
                                             ]),
                                     ]),
                             ]),
+
+
                         Tabs\Tab::make('Kesimpulan')
                             ->icon('heroicon-o-document-text')
                             ->schema([
@@ -196,10 +371,27 @@ class MonitoringResource extends Resource
                                         Grid::make(1)
                                             ->schema([
                                                 Forms\Components\TextInput::make('capaian_pk_obs')
-                                                    ->label('Capaian PK OBS')
+                                                    ->label('Capaian PK OBS (%)')
+                                                    ->disabled()
+                                                    ->dehydrated(true)
                                                     ->numeric()
                                                     ->default(0)
-                                                    ->suffix('%'),
+                                                    ->reactive()
+                                                    ->dehydrateStateUsing(function ($state, $get) {
+                                                        $isr = $get('isrmon_capaian') ?? 0;
+                                                        $occ = $get('occ_capaian') ?? 0;
+                                                        $iden = $get('iden_capaian') ?? 0;
+                                                        $total = ($isr + $occ + $iden) / 3;
+                                                        return min(round($total, 2), 100); // Maks 100%
+                                                    })
+                                                    ->afterStateHydrated(function ($state, $set, $get) {
+                                                        $isr = $get('isrmon_capaian') ?? 0;
+                                                        $occ = $get('occ_capaian') ?? 0;
+                                                        $iden = $get('iden_capaian') ?? 0;
+                                                        $total = ($isr + $occ + $iden) / 3;
+                                                        $set('capaian_pk_obs', min(round($total, 2), 100));
+                                                    }),
+
                                                 Forms\Components\Textarea::make('catatan')
                                                     ->label('Catatan')
                                                     ->maxLength(500)
@@ -220,7 +412,8 @@ class MonitoringResource extends Resource
                 Tables\Columns\TextColumn::make('upt')->searchable(),
                 Tables\Columns\TextColumn::make('stasiun_monitor'),
                 Tables\Columns\TextColumn::make('tanggal')->date(),
-                Tables\Columns\TextColumn::make('kab_kota'),
+                Tables\Columns\TextColumn::make('location.kota')->label('Kabupaten/Kota')->searchable(),
+
                 Tables\Columns\TextColumn::make('alamat')->limit(20),
                 Tables\Columns\TextColumn::make('lat'),
                 Tables\Columns\TextColumn::make('lng'),
@@ -244,8 +437,23 @@ class MonitoringResource extends Resource
                 Tables\Columns\TextColumn::make('catatan')->limit(15),
             ])
             ->filters([])
+            ->actions([
+            Tables\Actions\ViewAction::make(),   // Opsional, kalau mau ada tombol "Lihat"
+            Tables\Actions\EditAction::make(),   // Default: tombol edit
+            Tables\Actions\DeleteAction::make(), // Ini tombol hapus
+        ])
             ->defaultSort('tanggal', 'desc');
     }
+
+    private static function updateCapaianPkObs($set, $get)
+    {
+        $isr = $get('isrmon_capaian') ?? 0;
+        $occ = $get('occ_capaian') ?? 0;
+        $iden = $get('iden_capaian') ?? 0;
+        $total = ($isr + $occ + $iden) / 3;
+        $set('capaian_pk_obs', min(round($total, 2), 100));
+    }
+
 
     public static function getRelations(): array
     {

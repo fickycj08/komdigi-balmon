@@ -22,7 +22,7 @@ class LokasiPemancar extends Model
         'tinggi_lokasi_mdpl',
         'tinggi_gedung_m',
         'tinggi_menara_m',
-        'location_id ',
+        'location_id',
     ];
 
     protected $casts = [
@@ -34,7 +34,8 @@ class LokasiPemancar extends Model
     ];
     public function location()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(Location::class, 'location_id');
+        
     }
     
 }

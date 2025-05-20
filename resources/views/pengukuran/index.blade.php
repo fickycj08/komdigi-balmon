@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -185,19 +186,8 @@
       animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
 
-      50% {
-        transform: scale(1.05);
-      }
 
-      100% {
-        transform: scale(1);
-      }
-    }
 
     /* Card Styling */
     #detailModal .bg-white/80 {
@@ -581,11 +571,310 @@
       align-items: center;
       justify-content: center;
     }
-    
+
     .wilayah-marker:hover {
       transform: scale(1.2);
       transition: transform 0.2s ease;
     }
+
+    /* ==== SUPER WILAYAH POPUP - REDESIGNED ==== */
+    .leaflet-popup-content-wrapper.wilayah-popup {
+      max-width: 95vw !important;
+      min-width: 0 !important;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15), 0 5px 15px rgba(0, 0, 0, 0.08);
+      padding: 0;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transform-origin: bottom center;
+      animation: popupFloat 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popupFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.9);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .leaflet-popup-content.wilayah-popup-content {
+      padding: 0;
+      margin: 0;
+      min-width: 220px;
+      /* boleh kecilin jadi 180-220px */
+      max-width: 340px;
+      /* tambah max-width agar tidak over */
+      width: 100%;
+      font-size: 1rem;
+      /* selalu pakai rem, jangan vw/vh di popup */
+    }
+
+    .wilayah-popup-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated Background */
+    .wilayah-popup-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(120deg, rgba(139, 92, 246, 0.05), rgba(56, 189, 248, 0.05), rgba(196, 181, 253, 0.05));
+      background-size: 200% 200%;
+      animation: gradientBG 15s ease infinite;
+      z-index: -1;
+    }
+
+    @keyframes gradientBG {
+      0% {
+        background-position: 0% 50%
+      }
+
+      50% {
+        background-position: 100% 50%
+      }
+
+      100% {
+        background-position: 0% 50%
+      }
+    }
+
+    /* Header Styling */
+    .wilayah-popup-header {
+      position: relative;
+      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      color: white;
+      padding: 1.5rem 1.5rem 1.5rem 5rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    /* Animated Wave Effect in Header */
+    .wilayah-popup-header::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 10px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 120' preserveAspectRatio='none'%3E%3Cpath d='M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z' opacity='.25' fill='%23FFFFFF'%3E%3C/path%3E%3Cpath d='M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z' opacity='.5' fill='%23FFFFFF'%3E%3C/path%3E%3Cpath d='M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z' fill='%23FFFFFF'%3E%3C/path%3E%3C/svg%3E") no-repeat;
+      background-size: cover;
+    }
+
+    /* Circular Icon in Header */
+    .wilayah-popup-header::before {
+      content: '';
+      position: absolute;
+      left: 1.2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3rem;
+      height: 3rem;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 11.5A2.5 2.5 0 0 1 9.5 9 2.5 2.5 0 0 1 12 6.5 2.5 2.5 0 0 1 14.5 9a2.5 2.5 0 0 1-2.5 2.5M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7z'/%3E%3C/svg%3E") no-repeat center center;
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.1), 0 0 20px rgba(0, 0, 0, 0.2);
+      animation: pulseIcon 2s infinite;
+    }
+
+    @keyframes pulseIcon {
+      0% {
+        transform: translateY(-50%) scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+      }
+
+      70% {
+        transform: translateY(-50%) scale(1.05);
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+      }
+
+      100% {
+        transform: translateY(-50%) scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      }
+    }
+
+    /* Content Sections */
+    .wilayah-popup-section {
+      position: relative;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .wilayah-popup-section:hover {
+      background-color: rgba(139, 92, 246, 0.05);
+      transform: translateX(5px);
+    }
+
+    .wilayah-popup-section:last-child {
+      border-bottom: none;
+      padding-bottom: 1.5rem;
+    }
+
+    /* Section Icon */
+    .wilayah-popup-section::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 60%;
+      background: linear-gradient(to bottom, #8b5cf6, #6366f1);
+      border-radius: 0 4px 4px 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .wilayah-popup-section:hover::before {
+      opacity: 1;
+    }
+
+    /* Labels and Values */
+    .wilayah-popup-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6366f1;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .wilayah-popup-label::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: #8b5cf6;
+      margin-right: 0.5rem;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+    }
+
+    .wilayah-popup-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-left: 1rem;
+      line-height: 1.4;
+    }
+
+    /* Status Badge */
+    .wilayah-popup-badge {
+      display: inline-block;
+      margin: 0.5rem 0;
+      align-self: flex-end;
+      padding: 0.4rem 1.2rem;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .wilayah-popup-badge::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+      transform: rotate(0deg);
+      transition: transform 0.5s ease;
+    }
+
+    .wilayah-popup-badge:hover::before {
+      transform: rotate(180deg);
+    }
+
+    .wilayah-popup-badge.inactive {
+      background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+
+    /* Footer with additional info */
+    .wilayah-popup-footer {
+      background: linear-gradient(to right, rgba(139, 92, 246, 0.05), rgba(99, 102, 241, 0.1));
+      padding: 0.75rem 1.5rem;
+      font-size: 0.8rem;
+      color: #6366f1;
+      text-align: center;
+      font-weight: 500;
+      border-top: 1px dashed rgba(139, 92, 246, 0.2);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 520px) {
+      .leaflet-popup-content.wilayah-popup-content {
+        min-width: 140px !important;
+        max-width: 94vw !important;
+        font-size: 0.96rem !important;
+      }
+    }
+
+    .wilayah-popup-header {
+      padding: 1.2rem 1.2rem 1.2rem 4rem;
+      font-size: 1.1rem;
+    }
+
+    .wilayah-popup-header::before {
+      left: 0.8rem;
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .wilayah-popup-section {
+      padding: 0.8rem 1.2rem;
+    }
+
+    .wilayah-popup-value {
+      font-size: 0.95rem;
+    }
+    }
+
+    .leaflet-popup-content-wrapper.pengukuran-popup {
+      max-width: 95vw !important;
+      min-width: 320px !important;
+      border-radius: 20px;
+      box-shadow: 0 10px 32px rgba(55, 142, 195, 0.11);
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .leaflet-popup-content.pengukuran-popup-content {
+      padding: 0.5rem 1.2rem;
+      min-width: 240px;
+      max-width: 480px;
+      width: 100%;
+      overflow-x: auto;
+    }
+
 
     /* CSS Menu Pengukuran END */
   </style>
@@ -723,17 +1012,17 @@
           </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div class="relative">
             <label for="filterKota" class="block text-gray-700 text-sm font-medium mb-2">Lokasi / Kota:</label>
             <div class="relative">
-              <select id="filterKota"
-                class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
+              <select id="filterKota" …>
                 <option value="">Semua Lokasi</option>
-                @foreach ($lokasiPemancars as $lokasi)
-                <option value="{{ $lokasi->kota }}">{{ $lokasi->kota }}</option>
-                @endforeach
+                @foreach($kotaList as $kota)
+          <option value="{{ $kota }}">{{ $kota }}</option>
+        @endforeach
               </select>
+
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <x-heroicon-s-chevron-down class="w-5 h-5" />
               </div>
@@ -747,8 +1036,8 @@
                 class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
                 <option value="">Semua Tahun</option>
                 @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
-                <option value="{{ $tahun }}">{{ $tahun }}</option>
-                @endfor
+          <option value="{{ $tahun }}">{{ $tahun }}</option>
+        @endfor
               </select>
               <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                 <x-heroicon-s-chevron-down class="w-5 h-5" />
@@ -756,12 +1045,12 @@
             </div>
           </div>
 
-         
+
         </div>
       </div>
 
       <!-- Container untuk Maps dan Buttons -->
-            <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border border-gray-100">
+      <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border border-gray-100">
         <!-- Toggle Buttons -->
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-xl text-[#006DB0] font-bold flex items-center">
@@ -793,7 +1082,7 @@
           <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl md:text-3xl font-bold text-[#006DB0]">Data Pengukuran</h1>
             <div class="flex space-x-2">
-              
+
             </div>
           </div>
 
@@ -806,7 +1095,7 @@
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Frekuensi (MHz)</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Bandwidth</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Daya</th>
-                    <th class="p-3 text-left font-semibold text-sm md:text-base">Koordinat</th>
+
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden lg:table-cell">H-1</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden xl:table-cell">H-2</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">H-3</th>
@@ -815,71 +1104,69 @@
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                   @foreach ($pengukurans as $index => $item)
-                    <tr class="hover:bg-blue-50 transition-colors {{ $index % 2 == 0 ? 'bg-white' : 'bg-gray-50' }}">
-                      <!-- Nomor ISR -->
-                      <td class="p-3 text-sm text-gray-800">
-                        <div class="font-medium text-gray-800">{{ $item->data_isr->no_isr ?? '-' }}</div>
-                      </td>
-                      @php
-                        $pengukuranPertama = $item->pengukuranFrekuensi ?? null;
-                      @endphp
-                      <td class="p-3 text-sm text-gray-800">
-                        <div class="font-medium text-blue-600">{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}</div>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800">
-                        <div>{{ $pengukuranPertama->bandwidth_khz ?? '-' }} kHz</div>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800">
-                        <div>{{ $pengukuranPertama->output_power_tx ?? '-' }} W</div>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800">
-                        <div class="flex items-center">
-                          <x-heroicon-s-map-pin class="w-4 h-4 text-red-500 mr-1 flex-shrink-0" />
-                          <span>{{ $item->lokasi_pemancar->latitude ?? '-' }}, {{ $item->lokasi_pemancar->longitude ?? '-' }}</span>
-                        </div>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800 hidden lg:table-cell">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                          {{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm
-                        </span>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800 hidden xl:table-cell">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                          {{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm
-                        </span>
-                      </td>
-                      <td class="p-3 text-sm text-gray-800">
-                        <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                          {{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm
-                        </span>
-                      </td>
-                      <!-- Aksi -->
-                      <td class="p-3 text-sm text-center">
-                        <button onclick="showDetail(
-                          '{{ $item->data_isr->no_isr ?? '-' }}',
-                          '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
-                          '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
-                          '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
-                          '{{ $item->LokasiPemancar->latitude ?? '-' }}',
-                          '{{ $item->LokasiPemancar->longitude ?? '-' }}',
-                          '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
-                          '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
-                          '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
-                          '{{ $item->lokasi_pemancar->alamat ?? '-' }}',
-                          '{{ $item->LokasiPemancar->kota ?? '-' }}',
-                          '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
-                          '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
-                          '{{ $pengukuranPertama->tanggal_ukur ?? '-' }}',
-                          '{{ $pengukuranPertama->field_strength ?? '-' }}',
-                          '{{ $pengukuranPertama->deviasi_freq ?? '-' }}',
-                          '{{ $pengukuranPertama->catatan ?? '-' }}'
-                        )" class="inline-flex items-center px-3 py-1.5 bg-[#378EC3] hover:bg-[#277db2] text-white rounded-lg text-sm transition-colors shadow-sm">
-                          <x-heroicon-s-eye class="w-4 h-4 mr-1" />
-                          Detail
-                        </button>
-                      </td>
-                    </tr>
-                  @endforeach
+                <tr class="hover:bg-blue-50 transition-colors {{ $index % 2 == 0 ? 'bg-white' : 'bg-gray-50' }}"
+                data-kota="{{ $item->LokasiPemancar->kota ?? '-' }}"
+                data-tahun="{{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}">
+                <!-- Nomor ISR -->
+                <td class="p-3 text-sm text-gray-800">
+                  <div class="font-medium text-gray-800">{{ $item->data_isr->no_isr ?? '-' }}</div>
+                </td>
+                @php
+              $pengukuranPertama = $item->pengukuranFrekuensi ?? null;
+            @endphp
+                <td class="p-3 text-sm text-gray-800">
+                  <div class="font-medium text-blue-600">{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}
+                  </div>
+                </td>
+                <td class="p-3 text-sm text-gray-800">
+                  <div>{{ $pengukuranPertama->bandwidth_khz ?? '-' }} kHz</div>
+                </td>
+                <td class="p-3 text-sm text-gray-800">
+                  <div>{{ $pengukuranPertama->output_power_tx ?? '-' }} W</div>
+                </td>
+
+                <td class="p-3 text-sm text-gray-800 hidden lg:table-cell">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
+                  {{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm
+                  </span>
+                </td>
+                <td class="p-3 text-sm text-gray-800 hidden xl:table-cell">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
+                  {{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm
+                  </span>
+                </td>
+                <td class="p-3 text-sm text-gray-800">
+                  <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
+                  {{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm
+                  </span>
+                </td>
+                <!-- Aksi -->
+                <td class="p-3 text-sm text-center">
+                  <button onclick="showDetail(
+            '{{ $item->data_isr->no_isr ?? '-' }}',
+            '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
+            '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
+            '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
+            '{{ $item->LokasiPemancar->latitude ?? '-' }}',
+            '{{ $item->LokasiPemancar->longitude ?? '-' }}',
+            '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
+            '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
+            '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
+            '{{ $item->lokasi_pemancar->alamat ?? '-' }}',
+            '{{ $item->LokasiPemancar->kota ?? '-' }}',
+            '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
+            '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
+            '{{ $pengukuranPertama->tanggal_ukur ?? '-' }}',
+            '{{ $pengukuranPertama->field_strength ?? '-' }}',
+            '{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }}',
+            '{{ $pengukuranPertama->catatan ?? '-' }}'
+            )" class="inline-flex items-center px-3 py-1.5 bg-[#378EC3] hover:bg-[#277db2] text-white rounded-lg text-sm transition-colors shadow-sm">
+                  <x-heroicon-s-eye class="w-4 h-4 mr-1" />
+                  Detail
+                  </button>
+                </td>
+                </tr>
+          @endforeach
                 </tbody>
               </table>
             </div>
@@ -887,7 +1174,8 @@
 
           <!-- Pagination -->
           <div class="mt-6 flex justify-between items-center px-4">
-            <div class="text-sm text-gray-600">Menampilkan 1-{{ count($pengukurans) }} dari {{ count($pengukurans) }} data
+            <div class="text-sm text-gray-600">Menampilkan 1-{{ count($pengukurans) }} dari {{ count($pengukurans) }}
+              data
             </div>
             <div class="flex space-x-1">
               <button
@@ -986,10 +1274,10 @@
                       <p class="text-xs text-gray-500">Daya Pancar</p>
                       <p class="font-medium" id="modalDaya"></p>
                     </div>
-                   <div>
-  <p class="text-xs text-gray-500">Deviasi Frekuensi</p>
-  <p class="font-medium" id="modalDeviasi"></p>
-</div>
+                    <div>
+                      <p class="text-xs text-gray-500">Deviasi Frekuensi</p>
+                      <p class="font-medium" id="modalDeviasi"></p>
+                    </div>
 
                   </div>
                 </div>
@@ -1048,7 +1336,7 @@
                 class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
                 Tutup
               </button>
-             
+
             </div>
           </div>
         </div>
@@ -1086,41 +1374,49 @@
     });
 
     // Filter untuk tabel
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const filterKota = document.getElementById("filterKota");
       const filterTahun = document.getElementById("filterTahun");
-      const filterFreq = document.getElementById("filterFreq");
-      const pengukuranRows = document.querySelectorAll("#tableContainer tbody tr");
+      const rows = document.querySelectorAll("#tableContainer tbody tr");
 
-      function applyFilters() {
-        const selectedKota = filterKota?.value?.toLowerCase().trim() || "";
-        const selectedTahun = filterTahun?.value?.trim() || "";
-        const selectedFreq = filterFreq?.value?.trim() || "";
-
-        pengukuranRows.forEach(row => {
-          const kota = row.querySelector("td:nth-child(5)")?.textContent.toLowerCase().trim() || "";
-          const frekuensi = parseFloat(row.querySelector("td:nth-child(2)")?.textContent.trim() || "0");
-          const tanggalUkur = row.getAttribute("data-tanggal") || "";
-          const tahun = tanggalUkur.substring(0, 4);
-          
-          let kotaMatch = selectedKota === "" || kota.includes(selectedKota);
-          let tahunMatch = selectedTahun === "" || tahun === selectedTahun;
-          let freqMatch = true;
-          
-          if (selectedFreq !== "") {
-            const [minFreq, maxFreq] = selectedFreq.split('-').map(Number);
-            freqMatch = frekuensi >= minFreq && frekuensi <= maxFreq;
-          }
-          
-          row.style.display = (kotaMatch && tahunMatch && freqMatch) ? "" : "none";
+      // --- helper untuk TABEL ---
+      function applyTableFilter() {
+        const kota = (filterKota.value || "").trim().toLowerCase();
+        const tahun = (filterTahun.value || "").trim();
+        rows.forEach(row => {
+          const rowKota = (row.dataset.kota || "").trim().toLowerCase();
+          const rowTahun = (row.dataset.tahun || "").trim();
+          const show =
+            (kota === "" || rowKota === kota) &&
+            (tahun === "" || rowTahun === tahun);
+          row.style.display = show ? "" : "none";
         });
       }
 
-      if (filterKota) filterKota.addEventListener("change", applyFilters);
-      if (filterTahun) filterTahun.addEventListener("change", applyFilters);
-      if (filterFreq) filterFreq.addEventListener("change", applyFilters);
-      applyFilters();
+      // --- helper untuk MARKER di peta ---
+      function applyMapFilter() {
+        const kota = (filterKota.value || "").trim();
+        const tahun = (filterTahun.value || "").trim();
+        (window.markersByTahun || []).forEach(m => {
+          const kotaOK = !kota || m.options.kota === kota;
+          const tahunOK = !tahun || m.options.tahun === tahun;
+          if (m.options.type === "pengukuran" || m.options.type === "lokasiPemancar") {
+            if (kotaOK && tahunOK) map.addLayer(m); else map.removeLayer(m);
+          }
+        });
+      }
+
+      // pasang listener SEKALI SAJA
+      [filterKota, filterTahun].forEach(sel => sel.addEventListener("change", () => {
+        applyTableFilter();
+        applyMapFilter();
+      }));
+
+      // jalankan pertama kali
+      applyTableFilter();
+      applyMapFilter();
     });
+
 
     // Map & Table Toggle with Marker Highlighting
     document.addEventListener("DOMContentLoaded", function () {
@@ -1152,691 +1448,825 @@
       // Menambahkan marker wilayah alokasi frekuensi
       const wilayahList = [
         {
-          nama: "105",
+          nama: "SOREANG",
+          kota_kab: "Kota A",
           koordinat: [-7.02694444444444, 107.516388888889],
           radius: 12000,
           warnaLingkaran: "#8B5CF6",
           warnaIsi: "#C4B5FD",
-          pembagian_kanal: "LPP RRI, Lokal, LPS",
+          LPP_RRI: "132, 158",
+          LPP_RRI_Lokal_LPS: "8, 24, 75, 91, 162",
           status: "Aktif"
         },
         {
-          nama: "132",
-          koordinat: [-7.32805555555556, 108.392777777778],
-          radius: 12000,
-          warnaLingkaran: "#8B5CF6",
-          warnaIsi: "#C4B5FD",
-          pembagian_kanal: "LPP RRI",
-          status: "Aktif"
+          nama: "CIAMIS",
+          kota_kab: "Ciamis",
+          koordinat: [-7.328055556, 108.3927778],
+          radius: 12000, // default, bisa diubah kalau ada
+          warnaLingkaran: "#8B5CF6", // default
+          warnaIsi: "#C4B5FD", // default
+          LPP_RRI: "132, 158",
+          LPP_RRI_Lokal_LPS: "8, 24, 75, 91, 162",
+          status: "Aktif" // default
         },
-         {
-          nama: "132",
-          koordinat: [-7.32805555555556, 108.392777777778],
+        {
+          nama: "CIKONENG, SADANANYA, CIHAURBEUTI, SINDANGKASIH",
+          kota_kab: "Ciamis", // Silakan update sesuai kab/kota aslinya
+          koordinat: [-7.296111111, 108.2525],
           radius: 12000,
           warnaLingkaran: "#8B5CF6",
           warnaIsi: "#C4B5FD",
-          pembagian_kanal: "LPP RRI",
-          status: "Aktif"
-        },
-         {
-          nama: "55",
-          koordinat: [-7.29611111111111, 108.2525],
-          radius: 12000,
-          warnaLingkaran: "#8B5CF6",
-          warnaIsi: "#C4B5FD",
-          pembagian_kanal: "LPP RRI, Lokal, LPS",
+          LPP_RRI: "", // Kosong karena tidak ada di data mentah
+          LPP_RRI_Lokal_LPS: "55, 122, 142",
           status: "Aktif"
         },
         {
-  nama: "82",
-  koordinat: [-7.185833333, 108.3697222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
+          nama: "KAWALI, JATINAGARA, RAJADESA",
+          kota_kab: "Ciamis",
+          koordinat: [-7.185833333, 108.3697222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "82",
+          LPP_RRI_Lokal_LPS: "15",
+          status: "Aktif"
+        },
+        {
+          nama: "SUKADANA, RANCAH, TAMBAK SARI, CISAGA",
+          kota_kab: "Ciamis", // *Kamu bisa update nama kabupaten/kota sesuai aslinya
+          koordinat: [-7.263611111, 108.5266667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "43",
+          LPP_RRI_Lokal_LPS: "110, 177",
+          status: "Aktif"
+        },
+        {
+          nama: "AGRABINTA, LELES",
+          kota_kab: "Cianjur",
+          koordinat: [-7.413055556, 106.8994444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "177",
+          LPP_RRI_Lokal_LPS: "43, 110",
+          status: "Aktif"
+        },
+        {
+          nama: "CIANJUR, WARUNGKONDANG, CILAKU, CUGENANG, GEKBRONG",
+          kota_kab: "Cianjur",
+          koordinat: [-6.82, 107.0775],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "186, 198",
+          LPP_RRI_Lokal_LPS: "63, 75, 87, 119, 131",
+          status: "Aktif"
+        },
+        {
+          nama: "CIBEBER, CAMPAKA",
+          kota_kab: "Cianjur",
+          koordinat: [-6.969722222, 107.1352778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "4, 68, 135",
+          status: "Aktif"
+        },
+        {
+          nama: "CIDAUN, NARINGGUL",
+          kota_kab: "Cianjur",
+          koordinat: [-7.400555556, 107.3316667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "132",
+          LPP_RRI_Lokal_LPS: "65",
+          status: "Aktif"
+        },
+        {
+          nama: "KARANGTENGAH, MANDE, SUKALUYU, CIKALONGKULON",
+          kota_kab: "Cianjur",
+          koordinat: [-6.748888889, 107.1952778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "8, 52",
+          LPP_RRI_Lokal_LPS: "16, 83, 150",
+          status: "Aktif"
+        },
+        {
+          nama: "SINDANGBARANG",
+          kota_kab: "Cianjur",
+          koordinat: [-7.463888889, 107.135],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "61, 128",
+          status: "Aktif"
+        },
+        {
+          nama: "SUKANEGARA, TAKOKAK, KADUPANDAK",
+          kota_kab: "Cianjur",
+          koordinat: [-7.121388889, 107.0552778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "12",
+          LPP_RRI_Lokal_LPS: "79, 146",
+          status: "Aktif"
+        },
+        {
+          nama: "BABAKAN",
+          kota_kab: "Cirebon",
+          koordinat: [-6.862777778, 108.7072222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "121",
+          LPP_RRI_Lokal_LPS: "54, 188",
+          status: "Aktif"
+        },
+        {
+          nama: "PALIMANAN, ARJAWINANGUN, GEGESIK",
+          kota_kab: "Cirebon",
+          koordinat: [-6.653611111, 108.4455556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "11, 27, 94, 145, 161",
+          status: "Aktif"
+        },
+        {
+          nama: "SUMBER, PLUMBON, WERU",
+          kota_kab: "Cirebon",
+          koordinat: [-6.76, 108.4952778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "73",
+          LPP_RRI_Lokal_LPS: "43, 58, 110",
+          status: "Aktif"
+        },
+        {
+          nama: "BANJARWANGI, SINGAJAYA, CIHURIP",
+          kota_kab: "Garut",
+          koordinat: [-7.441111111, 107.9036111],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "186",
+          LPP_RRI_Lokal_LPS: "52, 119",
+          status: "Aktif"
+        },
+        {
+          nama: "BUNGBULANG, MEKARMUKTI, CARINGIN",
+          kota_kab: "Garut",
+          koordinat: [-7.486666667, 107.5416667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "107",
+          LPP_RRI_Lokal_LPS: "",
+          status: "Aktif"
+        },
+        {
+          nama: "CIBATU, LIMBANGAN, CIBIUK",
+          kota_kab: "Garut",
+          koordinat: [-7.034722222, 107.9844444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "79",
+          LPP_RRI_Lokal_LPS: "12, 146",
+          status: "Aktif"
+        },
+        {
+          nama: "CIGEDUG, CILAWU, CIKAJANG",
+          kota_kab: "Garut",
+          koordinat: [-7.375277778, 107.8186111],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "83",
+          LPP_RRI_Lokal_LPS: "16, 150",
+          status: "Aktif"
+        },
+        {
+          nama: "CISEWU, TALEGONG",
+          kota_kab: "Garut",
+          koordinat: [-7.292222222, 107.5305556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "66, 133",
+          status: "Aktif"
+        },
+        {
+          nama: "GARUT",
+          kota_kab: "Garut",
+          koordinat: [-7.200555556, 107.9063889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "28, 44, 95, 111, 162, 178",
+          status: "Aktif"
+        },
+        {
+          nama: "PAMEUNGPEUK, CISOMPET, CIBALONG, CIKELET",
+          kota_kab: "Garut",
+          koordinat: [-7.600555556, 107.7708333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "40, 59, 126, 174, 193",
+          status: "Aktif"
+        },
+        {
+          nama: "SAMARANG, PASIRWANGI, BAYONGBONG, CISURUPAN, SUKARESMI",
+          kota_kab: "Garut",
+          koordinat: [-7.2625, 107.8197222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "32, 99, 166",
+          status: "Aktif"
+        },
+        {
+          nama: "BALONGAN, INDRAMAYU, SINDANG, CANTIGI, LOH BENER, ARAHAN",
+          kota_kab: "Indramayu",
+          koordinat: [-6.326388889, 108.3219444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "125",
+          LPP_RRI_Lokal_LPS: "36, 103, 138, 154",
+          status: "Aktif"
+        },
+        {
+          nama: "BONGAS, ANJATAN, SUKRA, PATROL",
+          kota_kab: "Indramayu",
+          koordinat: [-6.335, 107.9494444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "181",
+          LPP_RRI_Lokal_LPS: "31, 47, 98, 114, 165",
+          status: "Aktif"
+        },
+        {
+          nama: "CIKEDUNG, LELEA, TRISI, TUKDANA, BANGODUA",
+          kota_kab: "Indramayu",
+          koordinat: [-6.512222222, 108.2138889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "134",
+          status: "Aktif"
+        },
+        {
+          nama: "HAURGEULIS, KROYA, GABUSWETAN, GANTAR",
+          kota_kab: "Indramayu",
+          koordinat: [-6.460277778, 107.9888889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "16",
+          LPP_RRI_Lokal_LPS: "83, 150",
+          status: "Aktif"
+        },
+        {
+          nama: "LOSARANG, KANDAHAUR",
+          kota_kab: "Indramayu",
+          koordinat: [-6.394166667, 108.1730556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "24",
+          status: "Aktif"
+        },
+        {
+          nama: "WIDASARI, KARANGAMPEL, JATIBARANG",
+          kota_kab: "Indramayu",
+          koordinat: [-6.480555556, 108.3502778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "4, 20, 71, 87, 170, 192",
+          status: "Aktif"
+        },
+        {
+          nama: "KARAWANG BARAT, TELUKJAMBE TIMUR, MAJALAYA, KARAWANG TIMUR, TELUKJAMBE BARAT",
+          kota_kab: "Karawang",
+          koordinat: [-6.297777778, 107.2980556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "19",
+          LPP_RRI_Lokal_LPS: "86, 153, 157, 199",
+          status: "Aktif"
+        },
+        {
+          nama: "KLARI, CIKAMPEK, JATISARI, TIRTAMULYA, LEMAHABANG, KOTA BARU, PURWASARI",
+          kota_kab: "Karawang",
+          koordinat: [-6.389722222, 107.4661111],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "44",
+          LPP_RRI_Lokal_LPS: "66",
+          status: "Aktif"
+        },
+        {
+          nama: "RENGASDENGKLOK, KUTAWALUYA, RAWAMERTA, JAYAKERTA, CILEBAR",
+          kota_kab: "Karawang",
+          koordinat: [-6.182222222, 107.3144444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "121, 188",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA BANDUNG",
+          kota_kab: "Kota Bandung",
+          koordinat: [-6.921388889, 107.6072222],
+          radius: 25000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "10, 85, 101",
+          LPP_RRI_Lokal_LPS: "2, 6, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 58, 62, 69, 73, 77, 81, 89, 93, 97, 109, 113, 117, 125, 129, 136, 140, 144, 148, 152, 156, 160, 164, 168, 172, 176, 180, 184, 188, 192, 196, 200",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA BANJAR",
+          kota_kab: "Kota Banjar",
+          koordinat: [-7.369444444, 108.5416667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "12",
+          LPP_RRI_Lokal_LPS: "32, 79, 99, 146, 166",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA CIMAHI",
+          kota_kab: "Kota Cimahi",
+          koordinat: [-6.873055556, 107.5422222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "54, 121",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA CIREBON",
+          kota_kab: "Kota Cirebon",
+          koordinat: [-6.706944444, 108.5580556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "100",
+          LPP_RRI_Lokal_LPS: "1, 17, 33, 68, 78, 84, 135, 151, 167, 177",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA SUKABUMI",
+          kota_kab: "Kota Sukabumi",
+          koordinat: [-6.921111111, 106.9258333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "190",
+          LPP_RRI_Lokal_LPS: "1, 32, 48, 56, 85, 94, 99, 115, 142, 166, 182",
+          status: "Aktif"
+        },
+        {
+          nama: "KOTA TASIKMALAYA",
+          kota_kab: "Kota Tasikmalaya",
+          koordinat: [-7.326666667, 108.2244444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "106",
+          LPP_RRI_Lokal_LPS: "4, 20, 36, 71, 87, 138, 154, 170",
+          status: "Aktif"
+        },
+        {
+          nama: "JALAKSANA, CILIMUS, CIGUGUR",
+          kota_kab: "Kuningan",
+          koordinat: [-6.904722222, 108.4894444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "39",
+          LPP_RRI_Lokal_LPS: "106, 173",
+          status: "Aktif"
+        },
+        {
+          nama: "KADUGEDE, GARAWANGI, KUNINGAN, KRAMATMULYA",
+          kota_kab: "Kuningan",
+          koordinat: [-6.980833333, 108.4927778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "23, 63, 90, 130, 157, 197",
+          status: "Aktif"
+        },
+        {
+          nama: "ARGAPURA, SUKAHAJI, RAJAGALUH",
+          kota_kab: "Majalengka",
+          koordinat: [-6.825277778, 108.3072222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "183",
+          LPP_RRI_Lokal_LPS: "49, 116",
+          status: "Aktif"
+        },
+        {
+          nama: "LEMAHSUGIH, BANTARUJEG, TALAGA, BANJARAN, MALAUSMA",
+          kota_kab: "Majalengka",
+          koordinat: [-6.964166667, 108.2425],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "194",
+          LPP_RRI_Lokal_LPS: "60, 127",
+          status: "Aktif"
+        },
+        {
+          nama: "MAJALENGKA",
+          kota_kab: "Majalengka",
+          koordinat: [-6.835277778, 108.2277778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "39, 141",
+          LPP_RRI_Lokal_LPS: "56, 123, 190, 198",
+          status: "Aktif"
+        },
+        {
+          nama: "PANGANDARAN",
+          kota_kab: "Pangandaran",
+          koordinat: [-7.684722222, 108.6533333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "107",
+          LPP_RRI_Lokal_LPS: "40, 174",
+          status: "Aktif"
+        },
+        {
+          nama: "PARIGI, CIJULANG, CIMERAK, CIGUGUR",
+          kota_kab: "Pangandaran",
+          koordinat: [-7.715833333, 108.4427778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "97",
+          LPP_RRI_Lokal_LPS: "164, 189",
+          status: "Aktif"
+        },
+        {
+          nama: "DARANGDAN, WANAYASA, PASAWAHAN, BOJONG, PODOKSALAM, KIARAPEDES",
+          kota_kab: "Purwakarta",
+          koordinat: [-6.673611111, 107.4805556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "134",
+          status: "Aktif"
+        },
+        {
+          nama: "PLERED, MANIIS, SUKATANI, TEGALWARU",
+          kota_kab: "Purwakarta",
+          koordinat: [-6.641666667, 107.3902778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "102",
+          LPP_RRI_Lokal_LPS: "169",
+          status: "Aktif"
+        },
+        {
+          nama: "PURWAKARTA, CAMPAKA, JATILUHUR, BABAKANCIKAO, BUNGURSARI, CIBATU",
+          kota_kab: "Purwakarta",
+          koordinat: [-6.512222222, 107.4641667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "3, 90",
+          LPP_RRI_Lokal_LPS: "23, 27, 35, 56, 70, 94, 137, 161",
+          status: "Aktif"
+        },
+        // SUBANG
+        {
+          nama: "CIASEM, BLANAKAN, PATOKBEUSI, SUKASARI",
+          kota_kab: "Subang",
+          koordinat: [-6.318333333, 107.6902778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "118",
+          LPP_RRI_Lokal_LPS: "51",
+          status: "Aktif"
+        },
+        {
+          nama: "CISALAK, TANJUNGSIANG, KASOMALANG",
+          kota_kab: "Subang",
+          koordinat: [-6.716388889, 107.7633333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "2",
+          status: "Aktif"
+        },
+        {
+          nama: "KALIJATI, PABUARAN, PURWADADI, CIPEUNDEUY, DAWUAN",
+          kota_kab: "Subang",
+          koordinat: [-6.495833333, 107.6583333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "79",
+          LPP_RRI_Lokal_LPS: "12, 146",
+          status: "Aktif"
+        },
+        {
+          nama: "PAGEDEN, BINONG, COMPRENG, CIPUNAGARA, TAMBAKDAHAN, PAGEDEN BARAT",
+          kota_kab: "Subang",
+          koordinat: [-6.434166667, 107.8313889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "130",
+          status: "Aktif"
+        },
+        {
+          nama: "PAMANUKAN, LEGONKULON",
+          kota_kab: "Subang",
+          koordinat: [-6.286388889, 107.8205556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "185",
+          status: "Aktif"
+        },
+        {
+          nama: "SAGALAHERANG, JALANCAGAK, SERANGPANAJANG, CIATER",
+          kota_kab: "Subang",
+          koordinat: [-6.673611111, 107.6525],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "194",
+          LPP_RRI_Lokal_LPS: "60, 127",
+          status: "Aktif"
+        },
+        {
+          nama: "SUBANG, CIBOGO, CIJAMBE",
+          kota_kab: "Subang",
+          koordinat: [-6.563055556, 107.7616667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "67, 107",
+          LPP_RRI_Lokal_LPS: "8, 40, 75, 142, 174",
+          status: "Aktif"
+        },
 
-{
-  nama: "149",
-  koordinat: [-7.185833333, 108.3697222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "43",
-  koordinat: [-7.263611111, 108.5266667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "177",
-  koordinat: [-7.413055556, 106.8994444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "186",
-  koordinat: [-6.82, 107.0775],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "4",
-  koordinat: [-6.969722222, 107.1352778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "132",
-  koordinat: [-7.400555556, 107.3316667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "8",
-  koordinat: [-6.748888889, 107.1952778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "61",
-  koordinat: [-7.463888889, 107.135],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "12",
-  koordinat: [-7.121388889, 107.0552778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "121",
-  koordinat: [-6.862777778, 108.7072222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "11",
-  koordinat: [-6.653611111, 108.4455556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "73",
-  koordinat: [-6.76, 108.4952778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "186",
-  koordinat: [-7.441111111, 107.9036111],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "107",
-  koordinat: [-7.486666667, 107.5416667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "79",
-  koordinat: [-7.034722222, 107.9844444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "83",
-  koordinat: [-7.375277778, 107.8186111],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "66",
-  koordinat: [-7.292222222, 107.5305556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "28",
-  koordinat: [-7.200555556, 107.9063889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "40",
-  koordinat: [-7.600555556, 107.7708333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "32",
-  koordinat: [-7.2625, 107.8197222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "125",
-  koordinat: [-6.326388889, 108.3219444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "181",
-  koordinat: [-6.335, 107.9494444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "134",
-  koordinat: [-6.512222222, 108.2138889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "16",
-  koordinat: [-6.460277778, 107.9888889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "24",
-  koordinat: [-6.394166667, 108.1730556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "4",
-  koordinat: [-6.480555556, 108.3502778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "19",
-  koordinat: [-6.297777778, 107.2980556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "44",
-  koordinat: [-6.389722222, 107.4661111],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "121",
-  koordinat: [-6.182222222, 107.3144444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "10",
-  koordinat: [-6.921388889, 107.6072222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "12",
-  koordinat: [-7.369444444, 108.5416667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "54",
-  koordinat: [-6.873055556, 107.5422222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "100",
-  koordinat: [-6.706944444, 108.5580556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "190",
-  koordinat: [-6.921111111, 106.9258333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "106",
-  koordinat: [-7.326666667, 108.2244444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "39",
-  koordinat: [-6.904722222, 108.4894444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "23",
-  koordinat: [-6.980833333, 108.4927778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "183",
-  koordinat: [-6.825277778, 108.3072222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "194",
-  koordinat: [-6.964166667, 108.2425],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "39",
-  koordinat: [-6.835277778, 108.2277778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "107",
-  koordinat: [-7.684722222, 108.6533333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "97",
-  koordinat: [-7.715833333, 108.4427778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "134",
-  koordinat: [-6.673611111, 107.4805556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "102",
-  koordinat: [-6.641666667, 107.3902778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "3",
-  koordinat: [-6.512222222, 107.4641667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "118",
-  koordinat: [-6.318333333, 107.6902778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "2",
-  koordinat: [-6.716388889, 107.7633333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "79",
-  koordinat: [-6.495833333, 107.6583333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "130",
-  koordinat: [-6.434166667, 107.8313889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "185",
-  koordinat: [-6.286388889, 107.8205556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "194",
-  koordinat: [-6.673611111, 107.6525],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "67",
-  koordinat: [-6.563055556, 107.7616667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "38",
-  koordinat: [-7.008333333, 106.7527778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "161",
-  koordinat: [-6.813611111, 106.7691667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "163",
-  koordinat: [-7.335833333, 106.8052778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "4",
-  koordinat: [-7.276111111, 106.5027778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "35",
-  koordinat: [-6.918333333, 106.4661111],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "44",
-  koordinat: [-6.831388889, 106.6630556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "87",
-  koordinat: [-7.269722222, 106.6252778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "72",
-  koordinat: [-6.985555556, 106.9427778],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "159",
-  koordinat: [-7.218611111, 106.8858333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "107",
-  koordinat: [-7.036666667, 106.5733333],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "158",
-  koordinat: [-6.71, 107.9155556],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "91",
-  koordinat: [-6.837777778, 107.9275],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "44",
-  koordinat: [-6.917777778, 108.0744444],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "1",
-  koordinat: [-7.5425, 108.0441667],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "68",
-  koordinat: [-7.158333333, 108.1472222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI, Lokal, LPS",
-  status: "Aktif"
-},
-{
-  nama: "129",
-  koordinat: [-7.692777778, 108.2188889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "103",
-  koordinat: [-7.664444444, 108.0763889],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-{
-  nama: "148",
-  koordinat: [-7.382222222, 108.0572222],
-  radius: 12000,
-  warnaLingkaran: "#8B5CF6",
-  warnaIsi: "#C4B5FD",
-  pembagian_kanal: "LPP RRI",
-  status: "Aktif"
-},
-        // ... tambahkan semua wilayah lainnya
+        // SUKABUMI
+        {
+          nama: "BANTARGADUNG, JAMPANGTENGAH, WARUNGKIARA, CIKEMBAR",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.008333333, 106.7527778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "38",
+          LPP_RRI_Lokal_LPS: "105, 172",
+          status: "Aktif"
+        },
+        {
+          nama: "CIBADAK, NAGRAK, PARUNGKUDA, CICURUG, CIDAHU, CIAMBAR",
+          kota_kab: "Sukabumi",
+          koordinat: [-6.813611111, 106.7691667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "161",
+          LPP_RRI_Lokal_LPS: "18, 27",
+          status: "Aktif"
+        },
+        {
+          nama: "CIDOLOG, TEGALBULEUD",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.335833333, 106.8052778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "163",
+          LPP_RRI_Lokal_LPS: "29, 96",
+          status: "Aktif"
+        },
+        {
+          nama: "CIEMAS, CIRACAP",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.276111111, 106.5027778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "4, 48",
+          LPP_RRI_Lokal_LPS: "15, 82, 149",
+          status: "Aktif"
+        },
+        {
+          nama: "CIKAKAK, CISOLOK",
+          kota_kab: "Sukabumi",
+          koordinat: [-6.918333333, 106.4661111],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "35, 40, 102, 169",
+          status: "Aktif"
+        },
+        {
+          nama: "CIKIDANG, BOJONGGENTENG, PARAKANSALAK, KALAPANUNGGAL, KABANDUNGAN",
+          kota_kab: "Sukabumi",
+          koordinat: [-6.831388889, 106.6630556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "44",
+          LPP_RRI_Lokal_LPS: "111, 178",
+          status: "Aktif"
+        },
+        {
+          nama: "JAMPANGKULON, KALIBUNDER, SURADE",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.269722222, 106.6252778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "87, 154",
+          LPP_RRI_Lokal_LPS: "20",
+          status: "Aktif"
+        },
+        {
+          nama: "KEBONPEDES, CIREUNGHAS, CISAAT, NYALINDUNG, GEGERBITUNG",
+          kota_kab: "Sukabumi",
+          koordinat: [-6.985555556, 106.9427778],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "72, 139",
+          status: "Aktif"
+        },
+        {
+          nama: "PABUARAN, SAGARANTEN, CURUGKEMBAR",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.218611111, 106.8858333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "159",
+          LPP_RRI_Lokal_LPS: "25, 92",
+          status: "Aktif"
+        },
+        {
+          nama: "PELABUHAN RATU, SIMPENAN",
+          kota_kab: "Sukabumi",
+          koordinat: [-7.036666667, 106.5733333],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "107",
+          LPP_RRI_Lokal_LPS: "8, 174",
+          status: "Aktif"
+        },
+        // SUMEDANG
+        {
+          nama: "CONGEANG, SURIAN, BUAHDUA, TANJUNGKERTA, TANJUNGMEDAR",
+          kota_kab: "Sumedang",
+          koordinat: [-6.71, 107.9155556],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "158",
+          status: "Aktif"
+        },
+        {
+          nama: "SUMEDANG",
+          kota_kab: "Sumedang",
+          koordinat: [-6.837777778, 107.9275],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "91",
+          LPP_RRI_Lokal_LPS: "52, 119, 186",
+          status: "Aktif"
+        },
+        {
+          nama: "WADO, JATINUNGGAL, DARMARAJA, CIBUGEL, CISITU, JATIGEDE",
+          kota_kab: "Sumedang",
+          koordinat: [-6.917777778, 108.0744444],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "44, 64",
+          status: "Aktif"
+        },
+
+        // TASIKMALAYA
+        {
+          nama: "BANTARKALONG, BOJONGGAMBIR, SODONGHILIR",
+          kota_kab: "Tasikmalaya",
+          koordinat: [-7.5425, 108.0441667],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "1, 66, 135",
+          status: "Aktif"
+        },
+        {
+          nama: "CIAWI, PAGERAGEUNG",
+          kota_kab: "Tasikmalaya",
+          koordinat: [-7.158333333, 108.1472222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "",
+          LPP_RRI_Lokal_LPS: "68, 133",
+          status: "Aktif"
+        },
+        {
+          nama: "CIKALONG, PANCATENGAH, CIKATOMAS",
+          kota_kab: "Tasikmalaya",
+          koordinat: [-7.692777778, 108.2188889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "129",
+          LPP_RRI_Lokal_LPS: "62, 196",
+          status: "Aktif"
+        },
+        {
+          nama: "CIPATUJAH, KARANGNUNGGAL",
+          kota_kab: "Tasikmalaya",
+          koordinat: [-7.664444444, 108.0763889],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "103, 181",
+          LPP_RRI_Lokal_LPS: "47, 114",
+          status: "Aktif"
+        },
+        {
+          nama: "SALAWU, CIGALONTANG",
+          kota_kab: "Tasikmalaya",
+          koordinat: [-7.382222222, 108.0572222],
+          radius: 12000,
+          warnaLingkaran: "#8B5CF6",
+          warnaIsi: "#C4B5FD",
+          LPP_RRI: "148",
+          LPP_RRI_Lokal_LPS: "48, 115, 182",
+          status: "Aktif"
+        },
+
       ];
 
       wilayahList.forEach(wilayah => {
         const marker = L.marker(wilayah.koordinat, {
           icon: L.divIcon({
             className: 'wilayah-marker',
-            html: `<div class="flex items-center justify-center w-6 h-6 bg-purple-600 rounded-full border-2 border-white shadow-lg"></div>`,
             iconSize: [24, 24],
-            iconAnchor: [12, 12]
+            iconAnchor: [12, 12],
+            html: `<div class="flex items-center justify-center w-6 h-6 bg-purple-600 rounded-full border-2 border-white shadow-lg pulse-animation"></div>`,
+
           })
         }).addTo(map);
 
@@ -1849,30 +2279,46 @@
           dashArray: '5, 5'
         }).addTo(map);
 
-        marker.bindPopup(`
-          <div class="p-3">
-            <h3 class="font-bold text-purple-600">Kanal ${wilayah.nama}</h3>
-            <table class="w-full text-sm mt-2">
-              <tr>
-                <td class="font-semibold pr-2">Radius:</td>
-                <td>${wilayah.radius / 1000} km</td>
-              </tr>
-              <tr>
-                <td class="font-semibold pr-2">Koordinat:</td>
-                <td>${wilayah.koordinat[0].toFixed(4)}, ${wilayah.koordinat[1].toFixed(4)}</td>
-              </tr>
-              <tr>
-                <td class="font-semibold pr-2">Pembagian Kanal:</td>
-                <td class="font-bold text-purple-600">${wilayah.pembagian_kanal}</td>
-              </tr>
-              <tr>
-                <td class="font-semibold pr-2">Status:</td>
-                <td><span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">${wilayah.status}</span></td>
-              </tr>
-            </table>
-          </div>
-        `);
+        marker.bindPopup(
+          `<div class="wilayah-popup-card">
+      <div class="wilayah-popup-header">
+        ${wilayah.nama}
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">Kota/Kabupaten</span>
+        <span class="wilayah-popup-value">${wilayah.kota_kab}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">Koordinat</span>
+        <span class="wilayah-popup-value">${wilayah.koordinat[0].toFixed(6)}, ${wilayah.koordinat[1].toFixed(6)}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">LPP RRI</span>
+        <span class="wilayah-popup-value">${wilayah.LPP_RRI}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">LPP RRI, Lokal, LPS</span>
+        <span class="wilayah-popup-value">${wilayah.LPP_RRI_Lokal_LPS}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-badge ${wilayah.status.toLowerCase() !== 'aktif' ? 'inactive' : ''}">${wilayah.status}</span>
+      </div>
+      
+    
+    </div>`,
+          {
+            className: "wilayah-popup",
+            maxWidth: 320
+          }
+        );
       });
+
+
 
       // Define icons
       const defaultIcon = L.icon({
@@ -1884,151 +2330,273 @@
 
       const pemancarIcon = L.icon({
         iconUrl: '/images/icon-pemancar.png', // Adjust path as needed
-        iconSize: [28, 28],
+        iconSize: [50, 50],
         iconAnchor: [14, 28],
         popupAnchor: [0, -26]
       });
 
       const highlightedDefaultIcon = L.icon({
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        iconSize: [35, 51],
+        iconUrl: '/images/marker-icon2.png',
+        iconSize: [60, 60],
         iconAnchor: [17, 51],
         popupAnchor: [1, -44]
       });
 
       const highlightedPemancarIcon = L.icon({
-        iconUrl: '/images/icon-pemancar.png', // Adjust path as needed
-        iconSize: [38, 38],
+        iconUrl: '/images/icon-pemancar2.png', // Adjust path as needed
+        iconSize: [70, 70],
         iconAnchor: [19, 38],
         popupAnchor: [0, -36]
       });
+
 
       // Marker groups
       var markerGroups = {};
 
       // Add pengukuran markers
       @foreach($pengukurans as $item)
-        @if($item->pengukuranFrekuensi && $item->pengukuranFrekuensi->latitude && $item->pengukuranFrekuensi->longitude)
-          var lat = {{ $item->pengukuranFrekuensi->latitude }};
-          var lng = {{ $item->pengukuranFrekuensi->longitude }};
-          var groupId = {{ $item->lokasi_pemancar_id ?? 'null' }}; // Adjust based on actual relationship, e.g., $item->data_isr->lokasiPemancar->id
-          if (groupId !== null) {
-            var marker = L.marker([lat, lng], {
-              groupId: groupId,
-              type: 'pengukuran',
-              originalIcon: defaultIcon
-            }).addTo(map);
-            marker.setIcon(defaultIcon);
+      @if($item->pengukuranFrekuensi && $item->pengukuranFrekuensi->latitude && $item->pengukuranFrekuensi->longitude)
+      var lat = {{ $item->pengukuranFrekuensi->latitude }};
+      var lng = {{ $item->pengukuranFrekuensi->longitude }};
+      var groupId = {{ $item->lokasi_pemancar_id ?? 'null' }}; // Adjust based on actual relationship, e.g., $item->data_isr->lokasiPemancar->id
+      if (groupId !== null) {
+      var tahun = '{{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}';
+      var marker = L.marker([lat, lng], {
+      kota: '{{ $item->LokasiPemancar->kota ?? "-" }}', // <-- TAMBAHKAN INI
+      tahun: tahun,   // simpan tahun pada options marker
+      groupId: groupId,
+      type: 'pengukuran',
+      originalIcon: defaultIcon
+      }).addTo(map);
 
-            var popupContent = `
-              <div class="p-3">
-                <h3 class="font-bold text-blue-600">{{ $item->data_isr->no_isr ?? 'Tidak ada ISR' }}</h3>
-                <table class="mt-2 w-full">
-                  <tr>
-                    <td class="font-semibold pr-2">Frekuensi:</td>
-                    <td>{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }} MHz</td>
-                  </tr>
-                  <tr>
-                    <td class="font-semibold pr-2">Bandwidth:</td>
-                    <td>{{ $pengukuranPertama->bandwidth_khz ?? '-' }} kHz</td>
-                  </tr>
-                  <tr>
-                    <td class="font-semibold pr-2">Daya:</td>
-                    <td>{{ $pengukuranPertama->output_power_tx ?? '-' }}</td>
-                  </tr>
-                  <tr>
-                    <td class="font-semibold pr-2">H-1:</td>
-                    <td>{{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm</td>
-                  </tr>
-                  <tr>
-                    <td class="font-semibold pr-2">H-2:</td>
-                    <td>{{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm</td>
-                  </tr>
-                  <tr>
-                    <td class="font-semibold pr-2">H-3:</td>
-                    <td>{{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm</td>
-                  </tr>
-                </table>
-                               <button onclick="showDetail(
-                  '{{ $item->data_isr->no_isr ?? '-' }}',
-                  '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
-                  '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
-                  '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
-                  '{{ $item->LokasiPemancar->latitude ?? '-' }}',
-                  '{{ $item->LokasiPemancar->longitude ?? '-' }}',
-                  '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
-                  '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
-                  '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
-                  '{{ $item->LokasiPemancar->alamat ?? '-' }}',
-                  '{{ $item->LokasiPemancar->kota ?? '-' }}',
-                  '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
-                  '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
-                 '{{ \Carbon\Carbon::parse($item->data_isr->tanggal)->translatedFormat("d F Y") ?? "-" }}',
+      // Simpan ke array marker custom, misal:
+      if (!window.markersByTahun) window.markersByTahun = [];
+      window.markersByTahun.push(marker);
+      marker.setIcon(defaultIcon);
 
-                  '{{ $pengukuranPertama->field_strength ?? '-' }}',
-                  '{{ $pengukuranPertama->deviasi_freq ?? '-' }}',
-                  '{{ $pengukuranPertama->catatan ?? '-' }}'
-                )" class="inline-block mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">Detail</button>
-              </div>
-            `;
-            marker.bindPopup(popupContent);
 
-            if (!markerGroups[groupId]) markerGroups[groupId] = [];
-            markerGroups[groupId].push(marker);
+      function filterMarkersByTahun(selectedTahun) {
+      window.markersByTahun.forEach(marker => {
+      if (!selectedTahun || marker.options.tahun === selectedTahun) {
+        marker.addTo(map);    // Tampilkan marker
+      } else {
+        map.removeLayer(marker); // Sembunyikan marker
+      }
+      });
+      }
 
-            marker.on('click', function() {
-              highlightGroup(this.options.groupId);
-            });
-          }
-        @endif
-      @endforeach
+      // Tambahkan event listener ke filter tahun:
+      filterTahun.addEventListener('change', function () {
+      const tahunDipilih = filterTahun.value.trim();
+      filterMarkersByTahun(tahunDipilih);
+      });
+
+
+      var popupContent = `
+      <div class="p-4 bg-gradient-to-br from-white to-blue-50 rounded-lg shadow-inner">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-blue-100">
+      <h3 class="font-bold text-lg text-blue-700 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+      </svg>
+      {{ $item->data_isr->no_isr ?? 'Tidak ada ISR' }}
+      </h3>
+      <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">
+      {{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}
+      </span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mb-3">
+      <div class="bg-blue-50 rounded-lg p-2">
+      <div class="text-xs text-blue-500 font-medium mb-1">Frekuensi</div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }} <span class="text-xs font-normal text-gray-500">MHz</span></div>
+      </div>
+
+      <div class="bg-blue-50 rounded-lg p-2">
+      <div class="text-xs text-blue-500 font-medium mb-1">Bandwidth</div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->bandwidth_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
+      </div>
+
+      <div class="bg-blue-50 rounded-lg p-2">
+      <div class="text-xs text-blue-500 font-medium mb-1">Daya</div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->output_power_tx ?? '-' }} <span class="text-xs font-normal text-gray-500">W</span></div>
+      </div>
+
+      <div class="bg-blue-50 rounded-lg p-2">
+      <div class="text-xs text-blue-500 font-medium mb-1">Deviasi</div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
+      </div>
+      </div>
+
+      <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-3 mb-3">
+      <div class="text-xs text-indigo-600 font-medium mb-2">Harmonisa</div>
+      <div class="flex justify-between items-center">
+      <div class="flex flex-col items-center">
+      <span class="text-xs text-gray-500 mb-1">H-1</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm</span>
+      </div>
+      <div class="flex flex-col items-center">
+      <span class="text-xs text-gray-500 mb-1">H-2</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm</span>
+      </div>
+      <div class="flex flex-col items-center">
+      <span class="text-xs text-gray-500 mb-1">H-3</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm</span>
+      </div>
+      </div>
+      </div>
+
+      <div class="flex items-center justify-between mb-2">
+      <div>
+      <span class="text-xs text-gray-500">Kanal:</span>
+      <span class="ml-1 font-medium">{{ $pengukuranPertama->kanal ?? '-' }}</span>
+      </div>
+      </div>
+
+      <button onclick="showDetail(
+      '{{ $item->data_isr->no_isr ?? '-' }}',
+      '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
+      '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
+      '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
+      '{{ $item->LokasiPemancar->latitude ?? '-' }}',
+      '{{ $item->LokasiPemancar->longitude ?? '-' }}',
+      '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
+      '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
+      '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
+      '{{ $item->LokasiPemancar->alamat ?? '-' }}',
+      '{{ $item->LokasiPemancar->kota ?? '-' }}',
+      '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
+      '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
+      '{{ \Carbon\Carbon::parse($item->data_isr->tanggal)->translatedFormat("d F Y") ?? "-" }}',
+      '{{ $pengukuranPertama->field_strength ?? '-' }}',
+      '{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }}',
+      '{{ $pengukuranPertama->catatan ?? '-' }}'
+      )" class="w-full mt-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 font-medium flex items-center justify-center shadow-md">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+      <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+      </svg>
+      Lihat Detail
+      </button>
+      </div>
+    `;
+
+      marker.bindPopup(popupContent, {
+      className: "pengukuran-popup",
+      maxWidth: 520,
+      minWidth: 340,
+      autoPan: true,
+      autoPanPadding: [40, 40]
+      });
+
+
+
+      if (!markerGroups[groupId]) markerGroups[groupId] = [];
+      markerGroups[groupId].push(marker);
+
+      marker.on('click', function () {
+      highlightGroup(this.options.groupId);
+      });
+      }
+    @endif
+    @endforeach
 
       // Add lokasiPemancar markers
       @foreach ($lokasiPemancars as $lp)
-        @if ($lp->latitude && $lp->longitude)
-          var lpLat = {{ $lp->latitude }};
-          var lpLng = {{ $lp->longitude }};
-          var groupId = {{ $lp->id }};
-          var lpMarker = L.marker([lpLat, lpLng], {
-            groupId: groupId,
-            type: 'lokasiPemancar',
-            originalIcon: pemancarIcon
-          }).addTo(map);
-          lpMarker.setIcon(pemancarIcon);
+      @if ($lp->latitude && $lp->longitude)
+      var lpLat = {{ $lp->latitude }};
+      var lpLng = {{ $lp->longitude }};
+      var groupId = {{ $lp->id }};
+      var lpMarker = L.marker([lpLat, lpLng], {
+      groupId: groupId,
+      type: 'lokasiPemancar',
+      originalIcon: pemancarIcon,
+      kota: '{{ $lp->kota ?? "-" }}', // <-- TAMBAHKAN INI
+      tahun: '{{ \Carbon\Carbon::parse($lp->created_at)->format('Y') }}' // ← Tambahkan ini!
+      }).addTo(map);
+      lpMarker.setIcon(pemancarIcon);
 
-          var lpPopup = `
-            <div class="p-3">
-              <h3 class="font-bold text-red-600">Stasiun Pemancar</h3>
-              <p class="mb-1">{{ $lp->alamat ?? '-' }}</p>
-              <table class="w-full text-sm">
-                <tr><td class="font-semibold pr-2">Koordinat:</td><td>{{ $lp->latitude }}, {{ $lp->longitude }}</td></tr>
-                <tr><td class="font-semibold pr-2">Kel./Kec.:</td><td>{{ $lp->kelurahan ?? '-' }}/{{ $lp->kecamatan ?? '-' }}</td></tr>
-                <tr><td class="font-semibold pr-2">Tinggi mdpl:</td><td>{{ $lp->tinggi_lokasi_mdpl ?? '-' }} m</td></tr>
-              </table>
-            </div>
-          `;
-          lpMarker.bindPopup(lpPopup);
+      if (!window.markersByTahun) window.markersByTahun = [];
+      window.markersByTahun.push(lpMarker);
 
-          if (!markerGroups[groupId]) markerGroups[groupId] = [];
-          markerGroups[groupId].push(lpMarker);
 
-          lpMarker.on('click', function() {
-            highlightGroup(this.options.groupId);
-          });
-        @endif
-      @endforeach
+      var lpPopup = `
+      <div class="p-4 bg-gradient-to-br from-white to-red-50 rounded-lg shadow-inner">
+      <div class="flex items-center justify-between mb-3 pb-2 border-b border-red-100">
+      <h3 class="font-bold text-lg text-red-700 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+      </svg>
+      Stasiun Pemancar
+      </h3>
+      <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded-full">
+      {{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}
+      </span>
+      </div>
+
+      <div class="mb-3 bg-red-50 rounded-lg p-3">
+      <div class="text-xs text-red-500 font-medium mb-1">Alamat Lengkap</div>
+      <p class="font-medium text-gray-800">{{ $lp->alamat ?? '-' }}</p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2 mb-3">
+      <div class="bg-red-50/70 rounded-lg p-2">
+      <div class="text-xs text-red-500 font-medium mb-1">Kelurahan</div>
+      <div class="font-bold text-gray-800">{{ $lp->kelurahan ?? '-' }}</div>
+      </div>
+
+      <div class="bg-red-50/70 rounded-lg p-2">
+      <div class="text-xs text-red-500 font-medium mb-1">Kecamatan</div>
+      <div class="font-bold text-gray-800">{{ $lp->kecamatan ?? '-' }}</div>
+      </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-2">
+      <div class="bg-red-50/70 rounded-lg p-2">
+      <div class="text-xs text-red-500 font-medium mb-1">Koordinat</div>
+      <div class="font-medium text-gray-800 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+      </svg>
+      <span class="text-sm">{{ $lp->latitude }}, {{ $lp->longitude }}</span>
+      </div>
+      </div>
+
+      <div class="bg-red-50/70 rounded-lg p-2">
+      <div class="text-xs text-red-500 font-medium mb-1">Tinggi MDPL</div>
+      <div class="font-bold text-gray-800 flex items-center">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+      {{ $lp->tinggi_lokasi_mdpl ?? '-' }} m
+      </div>
+      </div>
+      </div>
+      </div>
+    `;
+
+      lpMarker.bindPopup(lpPopup);
+
+      if (!markerGroups[groupId]) markerGroups[groupId] = [];
+      markerGroups[groupId].push(lpMarker);
+
+      lpMarker.on('click', function () {
+      highlightGroup(this.options.groupId);
+      });
+    @endif
+    @endforeach
 
       // Highlight function
       function highlightGroup(groupId) {
         // Reset all markers
         for (var id in markerGroups) {
-          markerGroups[id].forEach(function(m) {
+          markerGroups[id].forEach(function (m) {
             m.setIcon(m.options.originalIcon);
           });
         }
         // Highlight the group
         if (markerGroups[groupId]) {
-          markerGroups[groupId].forEach(function(m) {
+          markerGroups[groupId].forEach(function (m) {
             if (m.options.type === 'pengukuran') {
               m.setIcon(highlightedDefaultIcon);
             } else if (m.options.type === 'lokasiPemancar') {
@@ -2068,65 +2636,65 @@
       // Default tampilkan map
       hideAllContainers();
       mapContainer.classList.remove("hidden");
-      
+
       // Hapus loading animation setelah halaman selesai dimuat
       setTimeout(() => {
         document.querySelector('.loading-animation').style.display = 'none';
       }, 800);
     });
-    
+
     // Detail Modal Functions
     function showDetail(noIsr, frekuensi, bandwidth, daya, lat, lng, h1, h2, h3, alamat, kota, kecamatan, kelurahan, tanggalUkur, fieldStrength, deviasi, catatan) {
       // Informasi Dasar
       document.getElementById('modalNoISR').innerText = noIsr;
       document.getElementById('modalTanggalUkur').innerText = tanggalUkur;
-      
+
       // Lokasi Pemancar
       document.getElementById('modalAlamat').innerText = alamat;
       document.getElementById('modalKota').innerText = kota;
       document.getElementById('modalKecamatan').innerText = kecamatan;
       document.getElementById('modalKelurahan').innerText = kelurahan;
       document.getElementById('modalKoordinat').innerText = `${lat}, ${lng}`;
-      
+
       // Parameter Teknis
       document.getElementById('modalFrekuensi').innerText = `${frekuensi} MHz`;
       document.getElementById('modalBandwidth').innerText = `${bandwidth} kHz`;
       document.getElementById('modalDaya').innerText = `${daya} W`;
-      document.getElementById('modalDeviasi').innerText = deviasi && deviasi !== '-' ? `${deviasi} kHz` : 'Tidak tersedia';
+      document.getElementById('modalDeviasi').innerText = deviasi && deviasi !== '-' && deviasi !== null ? `${deviasi} kHz` : 'Tidak tersedia';
 
 
-    
-      
+
+
       // Harmonisa
       document.getElementById('modalH1').innerText = `${h1} dBm`;
       document.getElementById('modalH2').innerText = `${h2} dBm`;
       document.getElementById('modalH3').innerText = `${h3} dBm`;
-      
+
       // Menghitung persentase untuk progress bar berdasarkan nilai dBm
       // Asumsi: nilai dBm berkisar antara -120 dBm hingga 0 dBm
       // Kita konversi ke persentase 0-100%
       const h1Value = parseFloat(h1);
       const h2Value = parseFloat(h2);
       const h3Value = parseFloat(h3);
-      
+
       const minDbm = -120;
       const maxDbm = 0;
       const range = maxDbm - minDbm;
-      
+
       const h1Percent = Math.min(100, Math.max(0, ((h1Value - minDbm) / range) * 100));
       const h2Percent = Math.min(100, Math.max(0, ((h2Value - minDbm) / range) * 100));
       const h3Percent = Math.min(100, Math.max(0, ((h3Value - minDbm) / range) * 100));
-      
+
       // Update progress bars
       document.getElementById('modalH1Bar').style.width = `${h1Percent}%`;
       document.getElementById('modalH2Bar').style.width = `${h2Percent}%`;
       document.getElementById('modalH3Bar').style.width = `${h3Percent}%`;
-      
+
       // Set class untuk progress bars berdasarkan nilai
       document.getElementById('modalH1Bar').className = `progress-bar ${h1Percent > 70 ? 'high' : h1Percent > 40 ? 'medium' : 'low'}`;
       document.getElementById('modalH2Bar').className = `progress-bar ${h2Percent > 70 ? 'high' : h2Percent > 40 ? 'medium' : 'low'}`;
       document.getElementById('modalH3Bar').className = `progress-bar ${h3Percent > 70 ? 'high' : h3Percent > 40 ? 'medium' : 'low'}`;
-      
+
       // Catatan
       document.getElementById('modalCatatan').innerText = catatan || 'Tidak ada catatan';
 
@@ -2139,6 +2707,5 @@
     }
   </script>
 </body>
+
 </html>
-
-
