@@ -32,11 +32,15 @@
                     <span class="absolute inset-y-0 left-3 flex items-center text-green-50">
                         <x-heroicon-o-envelope class="w-6 h-6" />
                     </span>
-                    <input type="email" name="email" placeholder="Email" class="w-[285px] pl-12 pr-4 py-2 text-green-50 placeholder-green-50 
-            bg-transparent border-0 border-b-2 border-transparent 
-            focus:border-green-50 border-green-50 focus:ring-0 rounded-none focus:outline-none">
+                    <input type="email" name="email" placeholder="Email" class="w-[285px] pl-12 pr-4 py-2
+             text-green-50 placeholder-green-50
+             bg-white/15 border border-white/40
+             focus:border-[#006DB0]
+             rounded-xl shadow-md backdrop-blur-md
+             transition-all focus:outline-none" />
                 </div>
             </div>
+
 
 
 
@@ -45,24 +49,23 @@
                     <span class="absolute inset-y-0 left-3 flex items-center text-green-50">
                         <x-heroicon-o-lock-closed class="w-6 h-6" />
                     </span>
-                    <input type="password" id="password" name="password" placeholder="Password" class="w-[285px] pl-12 pr-10 py-2 text-green-50 placeholder-green-50 
-            bg-transparent border-0 border-b-2 border-transparent 
-            focus:border-green-50 border-green-50 focus:ring-0 rounded-none focus:outline-none">
+                    <input type="password" id="password" name="password" placeholder="Password" class="w-[285px] pl-12 pr-10 py-2
+                   text-green-50 placeholder-green-50
+                   bg-white/15 border border-white/40
+                   focus:border-[#006DB0]
+                   rounded-xl shadow-md backdrop-blur-md
+                   transition-all focus:outline-none" />
                     <button type="button" onclick="togglePassword()"
                         class="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-50">
-                        <x-heroicon-o-eye id="eye" class="w-6 h-6" />
-                        <x-heroicon-o-eye-slash id="eye-slash" class="w-6 h-6 hidden" />
+                        <x-heroicon-o-eye id="eye" class="w-6 h-6 hidden" /> <!-- Mata terbuka di-hidden -->
+                        <x-heroicon-o-eye-slash id="eye-slash" class="w-6 h-6" /> <!-- Mata tertutup tampil -->
                     </button>
+
                 </div>
             </div>
 
-            <!-- Remember Me Checkbox (di sebelah kiri) -->
-            <div class="flex justify-start items-center ml-[105px]">
-                <label class="flex items-center text-green-50">
-                    <input type="checkbox" name="remember" class="mr-2">
-                    Remember Me
-                </label>
-            </div>
+
+
 
 
             <div class="flex justify-center items-center pt-[30px]">
@@ -71,9 +74,8 @@
                     Login
                 </button>
             </div>
-
         </form>
-
+    </div>
 </body>
 <script>
     function togglePassword() {
@@ -83,14 +85,15 @@
 
         if (passwordInput.type === "password") {
             passwordInput.type = "text";
-            eyeOpen.classList.add("hidden");
-            eyeOff.classList.remove("hidden");
+            eyeOpen.classList.remove("hidden");    // Mata terbuka muncul
+            eyeOff.classList.add("hidden");        // Mata tertutup hilang
         } else {
             passwordInput.type = "password";
-            eyeOpen.classList.remove("hidden");
-            eyeOff.classList.add("hidden");
+            eyeOpen.classList.add("hidden");       // Mata terbuka hilang
+            eyeOff.classList.remove("hidden");     // Mata tertutup muncul
         }
     }
+
 </script>
 
 </html>

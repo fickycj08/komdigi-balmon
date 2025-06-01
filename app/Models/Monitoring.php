@@ -35,8 +35,9 @@ class Monitoring extends Model
 
 
     public function location()
-    {
-        return $this->belongsTo(\App\Models\Location::class, 'location_id');
-    }
+{
+    return $this->belongsTo(\App\Models\Location::class, 'location_id');
+}
+
 
 }

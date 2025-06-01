@@ -9,10 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up() {
+    public function up()
+    {
         Schema::create('pengganggu', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('gangguan_id')->constrained('gangguan')->onDelete('cascade');
+            $table->unsignedBigInteger('gangguan_id');
             $table->string('nama');
             $table->string('jenis_organisasi');
             $table->string('kontak')->nullable();
@@ -21,15 +22,22 @@ return new class extends Migration
             $table->string('status_pelanggaran');
             $table->string('service');
             $table->string('sub_service');
-            $table->string('kab_kota');
             $table->string('kecamatan');
             $table->decimal('latitude', 10, 7);
             $table->decimal('longitude', 10, 7);
+            $table->unsignedBigInteger('location_id');
+            $table->string('jalan');
+            $table->string('alamat_lengkap');
             $table->timestamps();
+
+            // Foreign key
+            $table->foreign('gangguan_id')->references('id')->on('gangguan')->onDelete('cascade');
+            $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
         });
     }
 
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('pengganggu');
     }
-}; 
+};

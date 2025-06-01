@@ -30,7 +30,7 @@ class GangguanResource extends Resource
 {
     protected static ?string $model = Gangguan::class;
     protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
-    protected static ?string $navigationGroup = 'Monitoring';
+    protected static ?string $navigationGroup = 'Gangguan';
     protected static ?int $navigationSort = 1;
     protected static ?string $modelLabel = 'Laporan Gangguan';
     protected static ?string $pluralModelLabel = 'Daftar Gangguan';
@@ -75,9 +75,8 @@ class GangguanResource extends Resource
 
                                             Select::make('severity')
                                                 ->options([
-                                                    'low' => 'Rendah',
-                                                    'medium' => 'Sedang',
-                                                    'high' => 'Tinggi',
+                                                    'marabahaya' => 'Marabahaya',
+                                                    'non marabahaya' => 'Non marabahaya',
                                                 ])
                                                 ->label('Level Gangguan')
                                                 ->required()
@@ -96,12 +95,12 @@ class GangguanResource extends Resource
                                                 ->required(),
 
                                             TextInput::make('no_laporan')
-                                                ->label('Nodin. Laporan')
+                                                ->label('Nomer Laporan')
                                                 ->required(),
                                         ]),
                                 ]),
 
-                            Section::make('Klasifikasi')
+                            Section::make('')
                                 ->columns(2)
                                 ->schema([
                                     TextInput::make('nama_client')
@@ -265,10 +264,11 @@ class GangguanResource extends Resource
                                                 ->columnSpan(2),
 
                                             Select::make('jenis_organisasi')
+                                            ->label('Penyelenggara')
                                                 ->options([
-                                                    'Perusahaan' => 'Perusahaan',
-                                                    'Pemerintah' => 'Pemerintah',
-                                                    'Individu' => 'Individu',
+                                                    'badan usaha' => 'Badan Usaha',
+                                                    'instansi pemerintah ' => 'Instansi Pemerintah',
+                                                    'perseorangan' => 'Perseorangan',
                                                 ])
                                                 ->required()
                                                 ->native(false),
@@ -313,32 +313,82 @@ class GangguanResource extends Resource
                                                 ->suffix('MHz')
                                                 ->required(),
 
-                                            TextInput::make('band_frekuensi')
-                                                ->label('Band Frekuensi')
-                                                ->required()
-                                                ->maxLength(20),
+                                            Select::make('band_frekuensi')
+    ->label('Band Frekuensi')
+    ->required()
+    ->options([
+        'HF' => 'HF',
+        'VHF' => 'VHF',
+        'UHF' => 'UHF',
+        'SHF' => 'SHF',
+    ])
+    ->placeholder('Pilih Band Frekuensi'),
 
-                                            TextInput::make('service')
-                                                ->label('Service')
-                                                ->required()
-                                                ->maxLength(50)
-                                                ->columnSpan(1),
+Select::make('service')
+    ->label('Service')
+    ->required()
+    ->options([
+        'Aeronautical' => 'Aeronautical',
+        'Broadcast' => 'Broadcast',
+        'Fixed Service' => 'Fixed Service',
+        'Land Mobile (private)' => 'Land Mobile (private)',
+        'Land Mobile (public)' => 'Land Mobile (public)',
+        'Maritime' => 'Maritime',
+        'Satellite' => 'Satellite',
+        'Other Services' => 'Other Services',
+    ])
+    ->reactive()
+    ->afterStateUpdated(fn(callable $set) => $set('sub_service', null)),
 
-                                            TextInput::make('sub_service')
-                                                ->label('Sub-Service')
-                                                ->required()
-                                                ->maxLength(50)
-                                                ->columnSpan(1),
+Select::make('sub_service')
+    ->label('Sub-Service')
+    ->required()
+    ->options(function (callable $get) {
+        $service = $get('service');
+        return match ($service) {
+            'Aeronautical' => [
+                'Ground-To-Air' => 'Ground-To-Air',
+            ],
+            'Broadcast' => [
+                'AM' => 'AM',
+                'DAB' => 'DAB',
+                'DVB-T' => 'DVB-T',
+                'FM' => 'FM',
+            ],
+            'Fixed Service' => [
+                'PMP' => 'PMP',
+                'PP' => 'PP',
+                'PP Private' => 'PP Private',
+            ],
+            'Land Mobile (private)' => [
+                'Standard' => 'Standard',
+                'Trunking' => 'Trunking',
+            ],
+            'Land Mobile (public)' => [
+                'LM Registered Stations' => 'LM Registered Stations',
+                'Trunking' => 'Trunking',
+                'Wireless Data' => 'Wireless Data',
+            ],
+            'Maritime' => [
+                'Coast Station' => 'Coast Station',
+            ],
+            'Satellite' => [
+                'Earth Fixed' => 'Earth Fixed',
+                'Earth Mobile' => 'Earth Mobile',
+                'VSAT' => 'VSAT',
+            ],
+            'Other Services' => [
+                'Radio Location' => 'Radio Location',
+                'Meteorological' => 'Meteorological',
+            ],
 
-                                            Select::make('status_pelanggaran')
-                                                ->options([
-                                                    'Belum Dikonfirmasi' => 'Belum Dikonfirmasi',
-                                                    'Terkonfirmasi' => 'Terkonfirmasi',
-                                                    'Ditindaklanjuti' => 'Ditindaklanjuti',
-                                                ])
-                                                ->native(false)
-                                                ->required()
-                                                ->columnSpanFull(),
+            default => [],
+        };
+    })
+    ->disabled(fn(callable $get) => $get('service') === null),
+
+
+                                            
                                         ]),
 
                                     Section::make('Koordinat')
@@ -425,17 +475,7 @@ class GangguanResource extends Resource
                     ->wrap()
                     ->limit(30),
 
-                IconColumn::make('pengganggu.status_pelanggaran')
-                    ->label('Status')
-                    ->options([
-                        'heroicon-o-check-circle' => 'Ditindaklanjuti',
-                        'heroicon-o-x-circle' => 'Belum Dikonfirmasi',
-                    ])
-                    ->colors([
-                        'success' => 'Ditindaklanjuti',
-                        'danger' => 'Belum Dikonfirmasi',
-                    ])
-                    ->size(IconColumn\IconColumnSize::Medium),
+                
 
                 IconColumn::make('file_path')
                     ->label('Dokumen')
@@ -445,11 +485,10 @@ class GangguanResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('severity')
-                    ->label('Level Gangguan')
+                    ->label('Kategori Gangguan')
                     ->options([
-                        'low' => 'Rendah',
-                        'medium' => 'Sedang',
-                        'high' => 'Tinggi',
+                        'marabahaya' => 'Marabahaya',
+                        'non marabahaya' => 'Non marabahaya',
                     ])
                     ->indicator('Severity'),
 

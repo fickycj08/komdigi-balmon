@@ -9,7 +9,8 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up() {
+    public function up()
+    {
         Schema::create('locations', function (Blueprint $table) {
             $table->id();
             $table->string('kota');
@@ -20,7 +21,8 @@ return new class extends Migration
         });
     }
 
-    public function down() {
+    public function down()
+    {
         Schema::dropIfExists('locations');
     }
 };

@@ -17,7 +17,6 @@ class LokasiPemancar extends Model
         'alamat',
         'kelurahan',
         'kecamatan',
-        'kota_madya',
         'telp_fax',
         'tinggi_lokasi_mdpl',
         'tinggi_gedung_m',

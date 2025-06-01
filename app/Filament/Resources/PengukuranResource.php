@@ -10,7 +10,8 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Wizard;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
@@ -19,7 +20,6 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -27,8 +27,7 @@ class PengukuranResource extends Resource
 {
     protected static ?string $model = Pengukuran::class;
 
-
-    protected static ?string $navigationLabel = 'Pengukuran test';
+    protected static ?string $navigationLabel = 'Data Pengukuran';
 
     protected static ?string $navigationGroup = 'Manajemen Pengukuran';
 
@@ -43,9 +42,10 @@ class PengukuranResource extends Resource
     {
         return $form
             ->schema([
-                Tabs::make('Form Pengukuran')
-                    ->tabs([
-                        Tab::make('Data ISR')->schema([
+                Wizard::make([
+                    Step::make('Data ISR')
+                        ->icon('heroicon-o-document-text')
+                        ->schema([
                             Forms\Components\Section::make()
                                 ->relationship('data_isr')
                                 ->schema([
@@ -66,17 +66,13 @@ class PengukuranResource extends Resource
                                             DatePicker::make('tanggal')
                                                 ->label('Tanggal Pengukuran')
                                                 ->required(),
-
-
                                         ]),
                                 ]),
                         ]),
 
-
-
-                        Tab::make('Stasiun Radio')->schema([
-
-
+                    Step::make('Stasiun Radio')
+                        ->icon('heroicon-o-radio')
+                        ->schema([
                             Section::make('Stasiun Radio (Studio)')
                                 ->relationship('stasiunRadio')
                                 ->schema([
@@ -99,12 +95,11 @@ class PengukuranResource extends Resource
                                     TextInput::make('email')
                                         ->label('Email'),
                                 ])
-
                         ]),
 
-                        Tab::make('Lokasi Pemancar')->schema([
-
-
+                    Step::make('Lokasi Pemancar')
+                        ->icon('heroicon-o-map-pin')
+                        ->schema([
                             Section::make('Lokasi Baru')
                                 ->relationship('lokasiPemancar')
                                 ->schema([
@@ -136,12 +131,11 @@ class PengukuranResource extends Resource
 
                                     Select::make('location_id')
                                         ->label('Kota (Location)')
-                                        ->relationship('location', 'kota') // opsional, hanya jika mau dari relasi
+                                        ->relationship('location', 'kota')
                                         ->searchable()
                                         ->preload()
                                         ->required()
-                                        ->name('location_id'), // ini wajib biar Filament tahu field relasinya
-
+                                        ->name('location_id'),
 
                                     TextInput::make('telp_fax')
                                         ->label('Telepon / Fax')
@@ -164,13 +158,11 @@ class PengukuranResource extends Resource
                                             ->required(),
                                     ]),
                                 ])
-
                         ]),
 
-
-                        Tab::make('Perangkat Pemancar')->schema([
-
-
+                    Step::make('Perangkat Pemancar')
+                        ->icon('heroicon-o-cpu-chip')
+                        ->schema([
                             Section::make('Perangkat Baru')
                                 ->relationship('perangkatPemancar')
                                 ->schema([
@@ -196,13 +188,13 @@ class PengukuranResource extends Resource
                                     ]),
 
                                     Forms\Components\Grid::make(2)->schema([
-                                        TextInput::make('jenis_antena')->label('Jenis Antena'), // pastikan ini sesuai DB (antenna, bukan antena)
+                                        TextInput::make('jenis_antena')->label('Jenis Antena'),
                                         TextInput::make('polarisasi')->label('Polarisasi'),
                                     ]),
 
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('jumlah_elemen_bay')->label('Jumlah Elemen (Bay)')->numeric(),
-                                        TextInput::make('beam_apr')->label('Beam Antena / Arah')->numeric(), // pastikan ini sesuai nama kolom DB
+                                        TextInput::make('beam_apr')->label('Beam Antena / Arah')->numeric(),
                                         TextInput::make('panjang_kabel_m')->label('Panjang Kabel (m)')->numeric(),
                                     ]),
 
@@ -211,11 +203,11 @@ class PengukuranResource extends Resource
                                         TextInput::make('tipe_kabel')->label('Tipe Kabel'),
                                     ]),
                                 ])
-
                         ]),
 
-
-                        Tab::make('Pengukuran Frekuensi')->schema([
+                    Step::make('Pengukuran Frekuensi')
+                        ->icon('heroicon-o-chart-bar')
+                        ->schema([
                             Section::make('Pengukuran Frekuensi')
                                 ->relationship('pengukuranFrekuensi')
                                 ->schema([
@@ -226,12 +218,11 @@ class PengukuranResource extends Resource
                                     ]),
 
                                     Select::make('location_id')
-    ->label('Lokasi (Kota)')
-    ->relationship('location', 'kota')
-    ->searchable()
-    ->preload()
-    ->required(), // atau ->nullable() kalau boleh kosong
-                                    
+                                        ->label('Lokasi (Kota)')
+                                        ->relationship('location', 'kota')
+                                        ->searchable()
+                                        ->preload()
+                                        ->required(),
 
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('bandwidth_khz')->label('Bandwidth (kHz)')->numeric(),
@@ -256,26 +247,29 @@ class PengukuranResource extends Resource
 
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('frekuensi_h1_mhz')->label('Frekuensi H1 (MHz)')->numeric(),
-                                        TextInput::make('level_h1_dbm')->label('Level H1 (dBm)')->numeric(),
+                                        
                                         TextInput::make('frekuensi_h2_mhz')->label('Frekuensi H2 (MHz)')->numeric(),
+                                        TextInput::make('frekuensi_h3_mhz')->label('Frekuensi H3 (MHz)')->numeric(),
                                     ]),
 
                                     Forms\Components\Grid::make(3)->schema([
+                                        TextInput::make('level_h1_dbm')->label('Level H1 (dBm)')->numeric(),
                                         TextInput::make('level_h2_dbm')->label('Level H2 (dBm)')->numeric(),
-                                        TextInput::make('frekuensi_h3_mhz')->label('Frekuensi H3 (MHz)')->numeric(),
+                                        
                                         TextInput::make('level_h3_dbm')->label('Level H3 (dBm)')->numeric(),
                                     ]),
                                 ])
                         ]),
 
-                        Tab::make('Pengukuran Studio')->schema([
+                    Step::make('Pengukuran Studio')
+                        ->icon('heroicon-o-microphone')
+                        ->schema([
                             Section::make('Studio to Transmitter Link (STL)')
                                 ->relationship('pengukuranStudio')
                                 ->schema([
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('jenis_stl')
                                             ->label('Jenis STL')
-                                            
                                             ->maxLength(100),
 
                                         TextInput::make('no_spt')
@@ -291,47 +285,74 @@ class PengukuranResource extends Resource
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('jenis_sbk')
                                             ->label('Jenis SBK')
-                                            
                                             ->maxLength(100),
 
                                         TextInput::make('kecamatan')
                                             ->label('Kecamatan')
-                                            
                                             ->maxLength(100),
                                     ]),
 
                                     Textarea::make('jalan')
                                         ->label('Alamat / Jalan'),
-                                        
 
                                     Forms\Components\Grid::make(2)->schema([
                                         TextInput::make('merk_alat_ukur')
                                             ->label('Merk Alat Ukur')
                                             ->maxLength(100),
-                                            
 
                                         TextInput::make('tipe_alat_ukur')
                                             ->label('Tipe Alat Ukur')
                                             ->maxLength(100),
-                                            
                                     ]),
                                 ])
                         ])
-
-                    ])
+                ])
                     ->columnSpanFull(),
             ]);
-
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('data_isr.no_isr')
+                    ->label('No. ISR')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('stasiunRadio.nama_penyelenggara')
+                    ->label('Penyelenggara')
+                    ->sortable()
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('lokasiPemancar.alamat')
+                    ->label('Alamat Pemancar')
+                    ->searchable(),
+
+                Tables\Columns\TextColumn::make('perangkatPemancar.merk')
+                    ->label('Merk Pemancar'),
+
+                Tables\Columns\TextColumn::make('pengukuranFrekuensi.frekuensi_terukur_mhz')
+                    ->label('Frekuensi Terukur (MHz)'),
+
+                Tables\Columns\TextColumn::make('pengukuranStudio.jenis_stl')
+                    ->label('Jenis STL'),
+
+                Tables\Columns\TextColumn::make('data_isr.tanggal')
+                    ->label('Tanggal Pengukuran')
+                    ->date('d-m-Y')
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Created')
+                    ->since(),
+
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Updated')
+                    ->since(),
             ])
             ->filters([
-                //
+                // tambahkan filter jika butuh
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

@@ -601,29 +601,17 @@
 
         <!-- Menu -->
         <nav>
-          <div class="px-4 py-2 mb-2">
-            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Dashboard</h3>
-          </div>
+          
 
           <ul class="space-y-1 px-2">
-            <li>
-              <a href="#"
-                class="flex items-center p-3 text-gray-700 rounded-xl hover:bg-blue-50 group transition-colors">
-                <div class="flex items-center justify-center w-8 h-8 text-blue-600 bg-blue-100 rounded-lg mr-3">
-                  <x-heroicon-s-home class="w-5 h-5" />
-                </div>
-                <span class="text-base font-medium">Beranda</span>
-              </a>
-            </li>
-
-            <div class="border-t border-gray-100 my-4"></div>
+            
 
             <div class="px-2 py-2 mb-1">
               <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Menu Layanan</h3>
             </div>
 
             <li>
-              <a href="#"
+              <a href="{{ route('monitoring.index') }}"
                 class="flex items-center p-3 text-gray-700 rounded-xl hover:bg-blue-50 group transition-colors">
                 <div class="flex items-center justify-center w-8 h-8 text-indigo-600 bg-indigo-100 rounded-lg mr-3">
                   <x-heroicon-o-computer-desktop class="w-5 h-5" />
@@ -638,7 +626,7 @@
                 <div class="flex items-center justify-center w-8 h-8 text-emerald-600 bg-emerald-100 rounded-lg mr-3">
                   <x-heroicon-o-arrow-trending-up class="w-5 h-5" />
                 </div>
-                <span class="text-base font-medium">Pengukuran</span>
+                <span class="text-base font-medium">Pengukuran FM</span>
               </a>
             </li>
 
@@ -676,13 +664,15 @@
       </div>
 
       <!-- Tombol Logout -->
-      <div class="p-3 mt-2">
-        <a href="#"
-          class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1">
-          <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
-          <span class="text-base font-medium">Logout</span>
-        </a>
-      </div>
+      <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="inline">
+    @csrf
+    <button type="submit"
+        class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1 w-full">
+        <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
+        <span class="text-base font-medium">Logout</span>
+    </button>
+</form>
+ 
     </aside>
 
     <!-- Ubah bagian Main Content -->
@@ -740,18 +730,29 @@
             Visualisasi Data
           </h2>
 
-          <div class="flex space-x-3" id="toggleButtons">
-            <button id="showMap"
-              class="px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
-              <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
-              Tampilkan Maps
-            </button>
-            <button id="showTable"
-              class="px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
-              <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
-              Tampilkan Gangguan
-            </button>
-          </div>
+          <div class="relative flex items-center space-x-3" id="toggleButtons">
+  <button id="showMap"
+    class="relative px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
+    type="button">
+    <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
+    Tampilkan Maps
+    <!-- Tooltip -->
+    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
+      Visualisasi data gangguan di peta interaktif
+    </span>
+  </button>
+  <button id="showTable"
+    class="relative px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
+    type="button">
+    <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
+    Tampilkan Data Tabel
+    <!-- Tooltip -->
+    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
+      Lihat data gangguan dalam bentuk tabel
+    </span>
+  </button>
+</div>
+
         </div>
 
         <!-- Map Container -->
@@ -770,7 +771,7 @@
             </div>
           </div>
 
-          <div class="overflow-hidden rounded-xl shadow-md border border-gray-100">
+          <div class="overflow-hidden rounded-xl shadow-md border border-gray-100"> 
             <div class="overflow-x-auto">
               <table class="w-full border-collapse">
                 <thead>
@@ -779,7 +780,7 @@
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Lokasi</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Frekuensi</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">No ST</th>
-                    <th class="p-3 text-left font-semibold text-sm md:text-base">VIC</th>
+                    <th class="p-3 text-left font-semibold text-sm md:text-base">PIC</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">No Laporan</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden md:table-cell">Band</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden lg:table-cell">Sub-Service</th>
@@ -850,37 +851,38 @@
                   </td>
                   <td class="p-3 text-sm md:text-base">
                     <button onclick="showDetail(
-                  '{{ $item->nama_client }}',
-                  '{{ $item->kecamatan }}',
-                  '{{ $item->waktu_kejadian }}',
-                  '{{ $item->jenis_gangguan }}',
-                  '{{ $item->severity }}',
-                  '{{ $item->frekuensi }}',
-                  '{{ $item->band_frekuensi }}',
-                  '{{ $item->service }}',
-                  '{{ $item->sub_service }}',
-                  '{{ $item->sifat_gangguan }}',
-                  '{{ $item->uraian_gangguan }}',
-                  '{{ round($item->latitude, 7) }}',
-                  '{{ round($item->longitude, 7) }}',
-                  '{{ optional($item->pengganggu->first())->nama ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->jenis_organisasi ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->frekuensi ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->status_pelanggaran ?? 'N/A' }}',
-                  '{{ optional(optional($item->pengganggu->first())->location)->kota ?? 'N/A' }}',
-                  '{{ $item->no_st }}',
-                  '{{ $item->vic }}',
-                  '{{ $item->no_laporan }}',
-                  '{{ optional($item->pengganggu->first())->band_frekuensi ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->service ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->sub_service ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->kecamatan ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->latitude ?? 'N/A' }}',
-                  '{{ optional($item->pengganggu->first())->longitude ?? 'N/A' }}'
-                  )" class="inline-flex items-center px-3 py-1.5 bg-[#378EC3] hover:bg-[#277db2] text-white rounded-lg text-sm transition-colors shadow-sm">
-                    <x-heroicon-s-eye class="w-4 h-4 mr-1" />
-                    Detail
-                    </button>
+    '{{ $item->nama_client }}',
+    '{{ $item->kecamatan }}',
+    '{{ $item->waktu_kejadian }}',
+    '{{ $item->jenis_gangguan }}',
+    '{{ $item->severity }}',
+    '{{ $item->frekuensi }}',
+    '{{ $item->band_frekuensi }}',
+    '{{ $item->service }}',
+    '{{ $item->sub_service }}',
+    '{{ $item->sifat_gangguan }}',
+    '{{ $item->uraian_gangguan }}',
+    '{{ round($item->latitude, 7) }}',
+    '{{ round($item->longitude, 7) }}',
+    '{{ optional($item->pengganggu->first())->nama ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->jenis_organisasi ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->frekuensi ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->status_pelanggaran ?? 'N/A' }}',
+    '{{ optional(optional($item->pengganggu->first())->location)->kota ?? 'N/A' }}',
+    '{{ $item->no_st }}',
+    '{{ $item->vic }}',
+    '{{ $item->no_laporan }}',
+    '{{ optional($item->pengganggu->first())->band_frekuensi ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->service ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->sub_service ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->kecamatan ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->latitude ?? 'N/A' }}',
+    '{{ optional($item->pengganggu->first())->longitude ?? 'N/A' }}',
+    '{{ $item->id }}' // <-- TAMBAHKAN ID ITEM DI SINI
+)" class="inline-flex items-center px-3 py-1.5 bg-[#378EC3] hover:bg-[#277db2] text-white rounded-lg text-sm transition-colors shadow-sm">
+    <x-heroicon-s-eye class="w-4 h-4 mr-1" />
+    Detail
+</button>
                   </td>
                   <td class="p-3 text-sm md:text-base text-center">
                     @if($item->file_path)
@@ -1089,16 +1091,18 @@
 
             <!-- Footer dengan Tombol Aksi -->
             <div class="bg-gray-50 p-4 flex justify-end space-x-3 border-t sticky bottom-0">
-              <button onclick="closeModal()"
-                class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
-                Tutup
-              </button>
-              <a href="{{ route('export.pdf') }}"
-                class="px-6 py-2 bg-[#EDBC1B] hover:bg-[#d6a716] text-white rounded-lg font-medium transition-colors">
-                <x-heroicon-s-arrow-down-tray class="w-5 h-5 inline mr-2" />
-                Export PDF
-              </a>
-            </div>
+    <button onclick="closeModal()"
+        class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+        Tutup
+    </button>
+    {{-- TOMBOL BARU UNTUK KE HALAMAN ADMIN --}}
+    <a href="/admin/gangguans" {{-- Ganti "/admin" dengan URL halaman admin Filament Anda jika berbeda --}}
+        class="px-6 py-2 bg-gradient-to-r from-[#378EC3] to-[#70C1F3] text-white rounded-lg font-medium shadow-md hover:from-[#277db2] hover:to-[#379ec3] transition-colors flex items-center">
+        <x-heroicon-s-wrench-screwdriver class="w-5 h-5 mr-2" /> {{-- Contoh ikon, sesuaikan jika perlu --}}
+        Ke Halaman Admin
+    </a>
+    {{-- AKHIR TOMBOL BARU --}}
+</div>
           </div>
         </div>
 
@@ -1109,290 +1113,298 @@
 
   <!-- Script -->
   <script>
-    // Toggle Sidebar
-    const sidebar = document.getElementById('sidebar');
-    const toggleButton = document.getElementById('toggleSidebar');
+// Toggle Sidebar
+const sidebar = document.getElementById('sidebar');
+const toggleButton = document.getElementById('toggleSidebar');
 
-    toggleButton.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-    });
+toggleButton.addEventListener('click', () => {
+  sidebar.classList.toggle('-translate-x-full');
+});
 
-    document.addEventListener('click', (event) => {
-      if (window.innerWidth < 768) {
-        const isClickInside = sidebar.contains(event.target);
-        const isToggleButton = toggleButton.contains(event.target);
-        if (!isClickInside && !isToggleButton && !sidebar.classList.contains('-translate-x-full')) {
-          sidebar.classList.add('-translate-x-full');
-        }
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      if (window.innerWidth >= 768) {
-        sidebar.classList.remove('-translate-x-full');
-      } else {
-        sidebar.classList.add('-translate-x-full');
-      }
-    });
-
-    // Filter untuk tabel
-    document.addEventListener("DOMContentLoaded", function () {
-      const filterKota = document.getElementById("filterKota");
-      const filterTahun = document.getElementById("filterTahun");
-      const gangguanRows = document.querySelectorAll("#tableContainer tbody tr");
-
-      function applyFilters() {
-        const selectedKota = filterKota.value.toLowerCase().trim();
-        const selectedTahun = filterTahun.value.trim();
-
-        gangguanRows.forEach(row => {
-          const kota = row.cells[1].textContent.toLowerCase().trim();
-          // Misal tanggal terdapat di cell ke-4 (sesuaikan bila perlu)
-          const tanggal = row.cells[11].textContent.trim();
-          const tahun = tanggal.substring(0, 4);
-          const kotaMatch = selectedKota === "" || kota.includes(selectedKota);
-          const tahunMatch = selectedTahun === "" || tahun === selectedTahun;
-          row.style.display = (kotaMatch && tahunMatch) ? "" : "none";
-        });
-      }
-
-      filterKota.addEventListener("change", applyFilters);
-      filterTahun.addEventListener("change", applyFilters);
-      applyFilters();
-    });
-
-    // Map & Table Toggle
-    document.addEventListener("DOMContentLoaded", function () {
-      const mapContainer = document.getElementById("mapContainer");
-      const tableContainer = document.getElementById("tableContainer");
-      const showMapBtn = document.getElementById("showMap");
-      const showTableBtn = document.getElementById("showTable");
-
-      // Inisialisasi map Leaflet
-      const map = L.map('map', {
-        center: [-6.9147, 107.6098],
-        zoom: 8,
-        zoomControl: false,
-        maxBounds: [
-          [-8.2, 105.0],
-          [-5.8, 109.0]
-        ],
-        maxBoundsViscosity: 1.0
-      });
-
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-
-      var gangguanData = {!! json_encode($gangguan, JSON_HEX_TAG) !!};
-
-      gangguanData.forEach(gangguan => {
-        if (gangguan.latitude && gangguan.longitude) {
-          // Buat marker tanpa bindPopup
-          const marker = L.marker([gangguan.latitude, gangguan.longitude]).addTo(map);
-          // Tambahkan event listener pada marker untuk membuka modal detail
-          // Untuk marker map
-          marker.on('click', function () {
-            showDetail(
-              gangguan.nama_client,
-              gangguan.kecamatan,
-              gangguan.waktu_kejadian,
-              gangguan.jenis_gangguan,
-              gangguan.severity,
-              gangguan.frekuensi,
-              gangguan.band_frekuensi,
-              gangguan.service,
-              gangguan.sub_service,
-              gangguan.sifat_gangguan,
-              gangguan.uraian_gangguan,
-              gangguan.latitude,
-              gangguan.longitude,
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].nama : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].jenis_organisasi : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].frekuensi : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].status_pelanggaran : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] && gangguan.pengganggu[0].location ? gangguan.pengganggu[0].location.kota : 'N/A',
-              gangguan.no_st,
-              gangguan.vic,
-              gangguan.no_laporan,
-
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].band_frekuensi : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].service : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].sub_service : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].kecamatan : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].latitude : 'N/A',
-              gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].longitude : 'N/A'
-            );
-          });
-        }
-      });
-
-      setTimeout(() => map.invalidateSize(), 100);
-      window.addEventListener('resize', () => {
-        map.invalidateSize();
-      });
-
-      function hideAllContainers() {
-        mapContainer.classList.add("hidden");
-        tableContainer.classList.add("hidden");
-      }
-
-      showMapBtn.addEventListener("click", () => {
-        hideAllContainers();
-        mapContainer.classList.remove("hidden");
-        setTimeout(() => {
-          map.invalidateSize();
-        }, 200);
-      });
-
-      showTableBtn.addEventListener("click", () => {
-        hideAllContainers();
-        tableContainer.classList.remove("hidden");
-      });
-
-      // Default tampilkan map
-      hideAllContainers();
-      mapContainer.classList.remove("hidden");
-    });
-
-    // Hilangkan loading animation
-    document.addEventListener("DOMContentLoaded", function () {
-      setTimeout(() => {
-        document.querySelector(".loading-animation").style.display = "none";
-      }, 500);
-    });
-
-    // Fungsi untuk menampilkan modal detail (menampilkan seluruh data gangguan dan pengganggu)
-    function showDetail(
-      namaClient,
-      kecamatan,
-      waktuKejadian,
-      jenisGangguan,
-      severity,
-      frekuensi,
-      bandFrekuensi,
-      service,
-      subService,
-      sifatGangguan,
-      uraianGangguan,
-      latitude,
-      longitude,
-      penggangguNama,
-      penggangguJenisOrg,
-      penggangguFrekuensi,
-      penggangguStatus,
-      penggangguKota,
-      // Parameter tambahan
-      noST,
-      vic,
-      noLaporan,
-
-      penggangguBandFrekuensi,
-      penggangguService,
-      penggangguSubService,
-      penggangguKecamatan,
-      penggangguLatitude,
-      penggangguLongitude
-    ) {
-      // Detail Gangguan
-      document.getElementById('modalNamaClient').innerText = namaClient || 'N/A';
-      document.getElementById('modalNoST').innerText = noST || 'N/A';
-      document.getElementById('modalVIC').innerText = vic || 'N/A';
-      document.getElementById('modalNoLaporan').innerText = noLaporan || 'N/A';
-      document.getElementById('modalKecamatan').innerText = kecamatan || 'N/A';
-      document.getElementById('modalWaktuKejadian').innerText = formatDate(waktuKejadian) || 'N/A';
-      document.getElementById('modalJenisGangguan').innerText = jenisGangguan || 'N/A';
-      document.getElementById('modalSeverity').innerText = severity || 'N/A';
-      document.getElementById('modalSeverity').className = '';
-      document.getElementById('modalSeverity').classList.add(severity);
-      document.getElementById('modalFrekuensi').innerText = frekuensi ? (frekuensi + " MHz") : 'N/A';
-      document.getElementById('modalBandFrekuensi').innerText = bandFrekuensi || 'N/A';
-      document.getElementById('modalService').innerText = service || 'N/A';
-      document.getElementById('modalSubService').innerText = subService || 'N/A';
-      document.getElementById('modalSifatGangguan').innerText = sifatGangguan || 'N/A';
-      document.getElementById('modalUraianGangguan').innerText = uraianGangguan || 'N/A';
-      document.getElementById('modalKoordinat').innerText = (latitude && longitude) ? (latitude + ", " + longitude) : 'N/A';
-
-      // Detail Pengganggu
-      document.getElementById('modalPenggangguNama').innerText = penggangguNama || 'N/A';
-      document.getElementById('modalPenggangguJenisOrg').innerText = penggangguJenisOrg || 'N/A';
-
-      document.getElementById('modalPenggangguFrekuensi').innerText = penggangguFrekuensi ? (penggangguFrekuensi + " MHz") : 'N/A';
-      document.getElementById('modalPenggangguBandFrekuensi').innerText = penggangguBandFrekuensi || 'N/A';
-      document.getElementById('modalPenggangguStatus').innerText = penggangguStatus || 'N/A';
-      document.getElementById('modalPenggangguService').innerText = penggangguService || 'N/A';
-      document.getElementById('modalPenggangguSubService').innerText = penggangguSubService || 'N/A';
-      document.getElementById('modalPenggangguKecamatan').innerText = penggangguKecamatan || 'N/A';
-      document.getElementById('modalPenggangguKota').innerText = penggangguKota || 'N/A';
-      document.getElementById('modalPenggangguKoordinat').innerText = (penggangguLatitude && penggangguLongitude) ?
-        (penggangguLatitude + ", " + penggangguLongitude) : 'N/A';
-
-      document.getElementById('detailModal').classList.remove('hidden');
+document.addEventListener('click', (event) => {
+  if (window.innerWidth < 768) {
+    const isClickInside = sidebar.contains(event.target);
+    const isToggleButton = toggleButton.contains(event.target);
+    if (!isClickInside && !isToggleButton && !sidebar.classList.contains('-translate-x-full')) {
+      sidebar.classList.add('-translate-x-full');
     }
+  }
+});
 
-    function closeModal() {
-      document.getElementById('detailModal').classList.add('hidden');
+window.addEventListener('resize', () => {
+  if (window.innerWidth >= 768) {
+    sidebar.classList.remove('-translate-x-full');
+  } else {
+    sidebar.classList.add('-translate-x-full');
+  }
+});
+
+// Variabel global untuk map dan data
+let map;
+let gangguanData = {!! json_encode($gangguan, JSON_HEX_TAG) !!};
+let markers = [];
+
+// Fungsi untuk clear markers
+function clearAllMarkers() {
+  for (let i = 0; i < markers.length; i++) {
+    map.removeLayer(markers[i]);
+  }
+  markers = [];
+}
+
+// Fungsi untuk update marker berdasarkan filter
+function updateMarkerFromFilter(selectedKota = "", selectedTahun = "") {
+  // Jika tidak ada parameter, ambil dari form
+  if (selectedKota === "" && selectedTahun === "") {
+    selectedKota = document.getElementById("filterKota").value.toLowerCase().trim();
+    selectedTahun = document.getElementById("filterTahun").value.trim();
+  }
+  
+  clearAllMarkers();
+
+  gangguanData.forEach(gangguan => {
+    // Pastikan data kota konsisten dengan yang di tabel
+    let kota = '';
+    if (gangguan.location && gangguan.location.kota) {
+      kota = gangguan.location.kota.toLowerCase().trim();
     }
+    
+    // Pastikan format tahun konsisten dengan yang di tabel
+    const tahun = gangguan.waktu_kejadian ? gangguan.waktu_kejadian.substring(0, 4) : '';
+    
+    const kotaMatch = selectedKota === "" || kota.includes(selectedKota);
+    const tahunMatch = selectedTahun === "" || tahun === selectedTahun;
 
-    function formatDate(dateString) {
-      if (!dateString) return 'N/A';
+    if (kotaMatch && tahunMatch && gangguan.latitude && gangguan.longitude) {
+  const marker = L.marker([gangguan.latitude, gangguan.longitude]).addTo(map);
 
-      try {
-        // Coba parse tanggal
-        const date = new Date(dateString);
+  // Buat popup
+  const popupContent = `
+    <strong>${gangguan.nama_client}</strong><br>
+    Kota: ${kota}<br>
+    Tahun: ${tahun}<br>
+    Frekuensi: ${gangguan.frekuensi} MHz
+  `;
 
-        // Format tanggal ke format yang diinginkan (DD-MM-YYYY HH:MM:SS)
-        const day = String(date.getDate()).padStart(2, '0');
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const year = date.getFullYear();
-        const hours = String(date.getHours()).padStart(2, '0');
-        const minutes = String(date.getMinutes()).padStart(2, '0');
-        const seconds = String(date.getSeconds()).padStart(2, '0');
+  // Bind popup ke marker
+  marker.bindPopup(popupContent);
 
-        return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
-      } catch (e) {
-        // Jika gagal parsing, kembalikan string asli
-        return dateString;
-      }
-    }
+  // === BUAT POPUP MUNCUL SAAT HOVER ===
+  marker.on('mouseover', function (e) {
+    this.openPopup();
+  });
+  marker.on('mouseout', function (e) {
+    this.closePopup();
+  });
 
+  // Tetap bisa klik untuk buka detail
+  marker.on('click', function () {
+    showDetail(
+      gangguan.nama_client,
+      gangguan.kecamatan,
+      gangguan.waktu_kejadian,
+      gangguan.jenis_gangguan,
+      gangguan.severity,
+      gangguan.frekuensi,
+      gangguan.band_frekuensi,
+      gangguan.service,
+      gangguan.sub_service,
+      gangguan.sifat_gangguan,
+      gangguan.uraian_gangguan,
+      gangguan.latitude,
+      gangguan.longitude,
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].nama : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].jenis_organisasi : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].frekuensi : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].status_pelanggaran : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] && gangguan.pengganggu[0].location ? gangguan.pengganggu[0].location.kota : 'N/A',
+      gangguan.no_st,
+      gangguan.vic,
+      gangguan.no_laporan,
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].band_frekuensi : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].service : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].sub_service : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].kecamatan : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].latitude : 'N/A',
+      gangguan.pengganggu && gangguan.pengganggu[0] ? gangguan.pengganggu[0].longitude : 'N/A'
+    );
+  });
+  markers.push(marker);
+}
 
-    const mapContainer = document.getElementById("mapContainer");
-    const tableContainer = document.getElementById("tableContainer");
-    const showMapBtn = document.getElementById("showMap");
-    const showTableBtn = document.getElementById("showTable");
+  });
+  
+  console.log(`Menampilkan ${markers.length} marker setelah filter`);
+}
 
-    function hideAllContainers() {
-      mapContainer.classList.add("hidden");
-      tableContainer.classList.add("hidden");
-    }
+// Map & Table Toggle
+document.addEventListener("DOMContentLoaded", function () {
+  const mapContainer = document.getElementById("mapContainer");
+  const tableContainer = document.getElementById("tableContainer");
+  const showMapBtn = document.getElementById("showMap");
+  const showTableBtn = document.getElementById("showTable");
 
-    // Event listener untuk tombol "Tampilkan Maps"
-    showMapBtn.addEventListener("click", () => {
-      hideAllContainers();
-      mapContainer.classList.remove("hidden");
-      // Jika menggunakan Leaflet, pastikan map menyesuaikan ukurannya
-      setTimeout(() => {
-        map.invalidateSize();
-      }, 200);
+  // Inisialisasi map Leaflet
+  map = L.map('map', {
+    center: [-6.9147, 107.6098],
+    zoom: 8,
+    zoomControl: false,
+    maxBounds: [
+      [-8.2, 105.0],
+      [-5.8, 109.0]
+    ],
+    maxBoundsViscosity: 1.0
+  });
 
-      // Update warna tombol
-      showMapBtn.style.backgroundColor = "#EDBC1B";   // aktif
-      showTableBtn.style.backgroundColor = "#006DB0";   // tidak aktif
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Panggil updateMarkerFromFilter setelah map diinisialisasi
+  updateMarkerFromFilter();
+
+  setTimeout(() => map.invalidateSize(), 100);
+  window.addEventListener('resize', () => {
+    map.invalidateSize();
+  });
+
+  function hideAllContainers() {
+    mapContainer.classList.add("hidden");
+    tableContainer.classList.add("hidden");
+  }
+
+  showMapBtn.addEventListener("click", () => {
+    hideAllContainers();
+    mapContainer.classList.remove("hidden");
+    setTimeout(() => {
+      map.invalidateSize();
+    }, 200);
+    
+    // Update warna tombol
+    showMapBtn.style.backgroundColor = "#EDBC1B";
+    showTableBtn.style.backgroundColor = "#006DB0";
+  });
+
+  showTableBtn.addEventListener("click", () => {
+    hideAllContainers();
+    tableContainer.classList.remove("hidden");
+    
+    // Update warna tombol
+    showTableBtn.style.backgroundColor = "#EDBC1B";
+    showMapBtn.style.backgroundColor = "#006DB0";
+  });
+
+  // Default tampilkan map
+  hideAllContainers();
+  mapContainer.classList.remove("hidden");
+
+  // Setup filter setelah map siap
+  setupFilters();
+});
+
+// Fungsi untuk setup filter
+function setupFilters() {
+  const filterKota = document.getElementById("filterKota");
+  const filterTahun = document.getElementById("filterTahun");
+  const gangguanRows = document.querySelectorAll("#tableContainer tbody tr");
+
+  function applyFilters() {
+    const selectedKota = filterKota.value.toLowerCase().trim();
+    const selectedTahun = filterTahun.value.trim();
+
+    // Filter tabel
+    gangguanRows.forEach(row => {
+      const kota = row.cells[1].textContent.toLowerCase().trim();
+      const tanggal = row.cells[11].textContent.trim();
+      const tahun = tanggal.substring(0, 4);
+      const kotaMatch = selectedKota === "" || kota.includes(selectedKota);
+      const tahunMatch = selectedTahun === "" || tahun === selectedTahun;
+      row.style.display = (kotaMatch && tahunMatch) ? "" : "none";
     });
 
-    // Event listener untuk tombol "Tampilkan Gangguan"
-    showTableBtn.addEventListener("click", () => {
-      hideAllContainers();
-      tableContainer.classList.remove("hidden");
+    // Filter marker
+    updateMarkerFromFilter(selectedKota, selectedTahun);
+  }
 
-      // Update warna tombol
-      showTableBtn.style.backgroundColor = "#EDBC1B";    // aktif
-      showMapBtn.style.backgroundColor = "#006DB0";      // tidak aktif
-    });
+  filterKota.addEventListener("change", applyFilters);
+  filterTahun.addEventListener("change", applyFilters);
+  applyFilters();
+}
 
+// Hilangkan loading animation
+document.addEventListener("DOMContentLoaded", function () {
+  setTimeout(() => {
+    document.querySelector(".loading-animation").style.display = "none";
+  }, 500);
+});
 
-  </script>
+// Fungsi untuk menampilkan modal detail
+function showDetail(
+  namaClient, kecamatan, waktuKejadian, jenisGangguan, severity,
+  frekuensi, bandFrekuensi, service, subService, sifatGangguan,
+  uraianGangguan, latitude, longitude, penggangguNama, penggangguJenisOrg,
+  penggangguFrekuensi, penggangguStatus, penggangguKota, noST, vic,
+  noLaporan, penggangguBandFrekuensi, penggangguService, penggangguSubService,
+  penggangguKecamatan, penggangguLatitude, penggangguLongitude
+) {
+  // Detail Gangguan
+  document.getElementById('modalNamaClient').innerText = namaClient || 'N/A';
+  document.getElementById('modalNoST').innerText = noST || 'N/A';
+  document.getElementById('modalVIC').innerText = vic || 'N/A';
+  document.getElementById('modalNoLaporan').innerText = noLaporan || 'N/A';
+  document.getElementById('modalKecamatan').innerText = kecamatan || 'N/A';
+  document.getElementById('modalWaktuKejadian').innerText = formatDate(waktuKejadian) || 'N/A';
+  document.getElementById('modalJenisGangguan').innerText = jenisGangguan || 'N/A';
+  document.getElementById('modalSeverity').innerText = severity || 'N/A';
+  document.getElementById('modalSeverity').className = '';
+  document.getElementById('modalSeverity').classList.add(severity);
+  document.getElementById('modalFrekuensi').innerText = frekuensi ? (frekuensi + " MHz") : 'N/A';
+  document.getElementById('modalBandFrekuensi').innerText = bandFrekuensi || 'N/A';
+  document.getElementById('modalService').innerText = service || 'N/A';
+  document.getElementById('modalSubService').innerText = subService || 'N/A';
+  document.getElementById('modalSifatGangguan').innerText = sifatGangguan || 'N/A';
+  document.getElementById('modalUraianGangguan').innerText = uraianGangguan || 'N/A';
+  document.getElementById('modalKoordinat').innerText = (latitude && longitude) ? (latitude + ", " + longitude) : 'N/A';
+
+  // Detail Pengganggu
+  document.getElementById('modalPenggangguNama').innerText = penggangguNama || 'N/A';
+  document.getElementById('modalPenggangguJenisOrg').innerText = penggangguJenisOrg || 'N/A';
+  document.getElementById('modalPenggangguFrekuensi').innerText = penggangguFrekuensi ? (penggangguFrekuensi + " MHz") : 'N/A';
+  document.getElementById('modalPenggangguBandFrekuensi').innerText = penggangguBandFrekuensi || 'N/A';
+  document.getElementById('modalPenggangguStatus').innerText = penggangguStatus || 'N/A';
+  document.getElementById('modalPenggangguService').innerText = penggangguService || 'N/A';
+  document.getElementById('modalPenggangguSubService').innerText = penggangguSubService || 'N/A';
+  document.getElementById('modalPenggangguKecamatan').innerText = penggangguKecamatan || 'N/A';
+  document.getElementById('modalPenggangguKota').innerText = penggangguKota || 'N/A';
+  document.getElementById('modalPenggangguKoordinat').innerText = (penggangguLatitude && penggangguLongitude) ?
+    (penggangguLatitude + ", " + penggangguLongitude) : 'N/A';
+
+  document.getElementById('detailModal').classList.remove('hidden');
+}
+
+function closeModal() {
+  document.getElementById('detailModal').classList.add('hidden');
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'N/A';
+
+  try {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  } catch (e) {
+    return dateString;
+  }
+}
+</script>
+
 
   <!-- Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>

@@ -33,6 +33,8 @@ class PengukuranController extends Controller
 
         $lokasiPemancars = LokasiPemancar::all();
 
-        return view('pengukuran.index', compact('pengukurans', 'lokasiPemancars', 'kotaList'));
+         $locations = \App\Models\Location::orderBy('kota')->get();
+
+        return view('pengukuran.index', compact('pengukurans', 'lokasiPemancars', 'locations'));
     }
 }

@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 class MonitoringController extends Controller
 {
  public function index()
-    {
-        $monitorings = Monitoring::all();
-        $locations = $monitorings->pluck('kab_kota')->unique();
+{
+    // Ambil semua monitoring SEKALIGUS relasi location-nya
+    $monitoring = Monitoring::with('location')->get();
 
-        $monitoring = Monitoring::all(); // atau pakai paginate() kalau perlu
+    // (Optional) Kalau masih mau pakai $locations untuk filter dropdown, bisa diambil dari relasi:
+    // $locations = $monitoring->pluck('location.kota')->unique();
+
     return view('monitoring.index', compact('monitoring'));
-    }
+}
+
 }

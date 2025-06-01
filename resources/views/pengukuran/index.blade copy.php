@@ -954,7 +954,7 @@
                 <div class="flex items-center justify-center w-8 h-8 bg-white/20 backdrop-blur-sm rounded-lg mr-3">
                   <x-heroicon-o-arrow-trending-up class="w-5 h-5 text-white" />
                 </div>
-                <span class="text-base font-medium">Pengukuran FM</span>
+                <span class="text-base font-medium">Pengukuran</span>
               </a>
             </li>
 
@@ -992,14 +992,13 @@
       </div>
 
       <!-- Tombol Logout -->
-       <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="inline">
-    @csrf
-    <button type="submit"
-        class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1 w-full">
-        <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
-        <span class="text-base font-medium">Logout</span>
-    </button>
-</form>
+      <div class="p-3 mt-2">
+        <a href="#"
+          class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1">
+          <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
+          <span class="text-base font-medium">Logout</span>
+        </a>
+      </div>
     </aside>
 
     <!-- Main Content -->
@@ -1013,7 +1012,7 @@
           </h2>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
 
           <div class="relative">
@@ -1043,17 +1042,6 @@
             </select>
           </div>
 
-          <div class="relative">
-            <label for="filterKotaPemancar" class="block text-gray-700 text-sm font-medium mb-2">Kota Pemancar:</label>
-            <select id="filterKotaPemancar"
-              class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg">
-              <option value="">Semua Kota</option>
-              @foreach($lokasiPemancars->pluck('location_id')->unique() as $locId)
-          <option value="{{ $locId }}">{{ $locations->firstWhere('id', $locId)->kota }}</option>
-        @endforeach
-            </select>
-          </div>
-
 
 
         </div>
@@ -1069,28 +1057,17 @@
           </h2>
 
           <div class="flex space-x-3" id="toggleButtons">
-  <button id="showMap"
-    class="relative px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
-    type="button">
-    <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
-    Tampilkan Maps
-    <!-- Tooltip -->
-    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
-      Visualisasi data gangguan di peta interaktif
-    </span>
-  </button>
-  <button id="showTable"
-    class="relative px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
-    type="button">
-    <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
-    Tampilkan Data Tabel
-    <!-- Tooltip -->
-    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
-      Lihat data gangguan dalam bentuk tabel
-    </span>
-  </button>
-</div>
-
+            <button id="showMap"
+              class="px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
+              <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
+              Tampilkan Maps
+            </button>
+            <button id="showTable"
+              class="px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
+              <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
+              Tampilkan Data Pengukuran
+            </button>
+          </div>
         </div>
 
         <!-- Map Container -->
@@ -1112,10 +1089,10 @@
               <table class="w-full border-collapse">
                 <thead>
                   <tr class="bg-gradient-to-r from-[#378EC3] to-[#70C1F3] text-white">
-                    <th class="p-3 text-left font-semibold text-sm md:text-base">Nama Stasiun</th>
+                    <th class="p-3 text-left font-semibold text-sm md:text-base">Nomor ISR</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Frekuensi (MHz)</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base">Bandwidth</th>
-                    <th class="p-3 text-left font-semibold text-sm md:text-base">Deviasi</th>
+                    <th class="p-3 text-left font-semibold text-sm md:text-base">Daya</th>
 
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden lg:table-cell">H-1</th>
                     <th class="p-3 text-left font-semibold text-sm md:text-base hidden xl:table-cell">H-2</th>
@@ -1130,57 +1107,57 @@
                 data-tahun="{{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}">
                 <!-- Nomor ISR -->
                 <td class="p-3 text-sm text-gray-800">
-                  <div class="font-medium text-gray-800">{{ $item->stasiunRadio->nama_penyelenggara ?? '-' }}</div>
+                  <div class="font-medium text-gray-800">{{ $item->data_isr->no_isr ?? '-' }}</div>
                 </td>
                 @php
               $pengukuranPertama = $item->pengukuranFrekuensi ?? null;
             @endphp
                 <td class="p-3 text-sm text-gray-800">
-                  <div class="font-medium text-blue-600">{{ $item->PengukuranFrekuensi->frekuensi_terukur_mhz ?? '-' }}
+                  <div class="font-medium text-blue-600">{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}
                   </div>
                 </td>
                 <td class="p-3 text-sm text-gray-800">
-                  <div>{{ $item->PengukuranFrekuensi->bandwidth_khz ?? '-' }} kHz</div>
+                  <div>{{ $pengukuranPertama->bandwidth_khz ?? '-' }} kHz</div>
                 </td>
                 <td class="p-3 text-sm text-gray-800">
-                  <div>{{ $item->PengukuranFrekuensi->deviasi_frekuensi_khz ?? '-' }} kHz</div>
+                  <div>{{ $pengukuranPertama->output_power_tx ?? '-' }} W</div>
                 </td>
 
                 <td class="p-3 text-sm text-gray-800 hidden lg:table-cell">
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                  {{ $item->PengukuranFrekuensi->level_h1_dbm ?? '-' }} dBm
+                  {{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm
                   </span>
                 </td>
                 <td class="p-3 text-sm text-gray-800 hidden xl:table-cell">
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                  {{ $item->PengukuranFrekuensi->level_h2_dbm ?? '-' }} dBm
+                  {{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm
                   </span>
                 </td>
                 <td class="p-3 text-sm text-gray-800">
                   <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-lg text-xs">
-                  {{ $item->PengukuranFrekuensi->level_h3_dbm ?? '-' }} dBm
+                  {{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm
                   </span>
                 </td>
                 <!-- Aksi -->
                 <td class="p-3 text-sm text-center">
                   <button onclick="showDetail(
             '{{ $item->data_isr->no_isr ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->frekuensi_terukur_mhz ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->bandwidth_khz ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->output_power_tx ?? '-' }}',
+            '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
+            '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
+            '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
             '{{ $item->LokasiPemancar->latitude ?? '-' }}',
             '{{ $item->LokasiPemancar->longitude ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->level_h1_dbm ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->level_h2_dbm ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->level_h3_dbm ?? '-' }}',
+            '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
+            '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
+            '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
             '{{ $item->LokasiPemancar->alamat ?? '-' }}',
             '{{ $item->LokasiPemancar->location_id ?? '-' }}',
             '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
             '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
             '{{ \Carbon\Carbon::parse($item->data_isr->tanggal)->translatedFormat("d F Y") ?? "-" }}',
-            '{{ $item->PengukuranFrekuensi->field_strength ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->deviasi_frekuensi_khz ?? '-' }}',
-            '{{ $item->PengukuranFrekuensi->catatan ?? '-' }}'
+            '{{ $pengukuranPertama->field_strength ?? '-' }}',
+            '{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }}',
+            '{{ $pengukuranPertama->catatan ?? '-' }}'
             )" class="inline-flex items-center px-3 py-1.5 bg-[#378EC3] hover:bg-[#277db2] text-white rounded-lg text-sm transition-colors shadow-sm">
                   <x-heroicon-s-eye class="w-4 h-4 mr-1" />
                   Detail
@@ -1419,7 +1396,8 @@
       filterKota?.addEventListener('change', applyTableFilter);
     });
 
-    // ======================= MAP SECTION =======================
+
+    // Map & Table Toggle with Marker Highlighting
     document.addEventListener("DOMContentLoaded", function () {
       const mapContainer = document.getElementById("mapContainer");
       const tableContainer = document.getElementById("tableContainer");
@@ -1446,36 +1424,7 @@
         position: 'bottomright'
       }).addTo(map);
 
-      // ========== ARRAY MARKER GLOBAL + FILTER SEKALI SAJA ==========
-      window.allMarkers = [];
-
-      function filterMapMarkers() {
-        const kotaPengukuran = document.getElementById("filterKota")?.value.trim();
-        const kotaPemancar = document.getElementById("filterKotaPemancar")?.value.trim();
-        const tahun = document.getElementById("filterTahun")?.value.trim();
-
-        window.allMarkers.forEach(marker => {
-          let tampil = true;
-          if (marker.options.type === 'pengukuran') {
-            if (kotaPengukuran && String(marker.options.kota) !== kotaPengukuran) tampil = false;
-            if (tahun && String(marker.options.tahun) !== tahun) tampil = false;
-          }
-          if (marker.options.type === 'lokasiPemancar') {
-            if (kotaPemancar && String(marker.options.kota) !== kotaPemancar) tampil = false;
-          }
-          if (tampil) {
-            if (!map.hasLayer(marker)) map.addLayer(marker);
-          } else {
-            if (map.hasLayer(marker)) map.removeLayer(marker);
-          }
-        });
-      }
-
-      document.getElementById("filterKota")?.addEventListener("change", filterMapMarkers);
-      document.getElementById("filterTahun")?.addEventListener("change", filterMapMarkers);
-      document.getElementById("filterKotaPemancar")?.addEventListener("change", filterMapMarkers);
-
-      // --------- WILAYAH (selalu tampil, tidak masuk array allMarkers) -------------
+      // Menambahkan marker wilayah alokasi frekuensi
       const wilayahList = [
         {
           nama: "SOREANG",
@@ -1488,7 +1437,6 @@
           LPP_RRI_Lokal_LPS: "8, 24, 75, 91, 162",
           status: "Aktif"
         },
-
         {
           nama: "CIAMIS",
           kota_kab: "Ciamis",
@@ -2287,6 +2235,7 @@
           LPP_RRI_Lokal_LPS: "48, 115, 182",
           status: "Aktif"
         },
+
       ];
 
       wilayahList.forEach(wilayah => {
@@ -2297,8 +2246,8 @@
             iconAnchor: [12, 12],
             html: `<div class="flex items-center justify-center w-6 h-6 bg-purple-600 rounded-full border-2 border-white shadow-lg pulse-animation"></div>`,
           }),
-          type: 'wilayah',
-          isAreaMarker: true
+          type: 'wilayah', // Add type property for area markers
+          isAreaMarker: true // Flag area markers to always show them
         }).addTo(map);
 
         L.circle(wilayah.koordinat, {
@@ -2308,34 +2257,41 @@
           fillOpacity: 0.2,
           weight: 2,
           dashArray: '5, 5',
-          isAreaCircle: true
+          isAreaCircle: true // Flag area circles to always show them
         }).addTo(map);
 
         marker.bindPopup(
           `<div class="wilayah-popup-card">
-            <div class="wilayah-popup-header">
-              ${wilayah.nama}
-            </div>
-            <div class="wilayah-popup-section">
-              <span class="wilayah-popup-label">Kota/Kabupaten</span>
-              <span class="wilayah-popup-value">${wilayah.kota_kab}</span>
-            </div>
-            <div class="wilayah-popup-section">
-              <span class="wilayah-popup-label">Koordinat</span>
-              <span class="wilayah-popup-value">${wilayah.koordinat[0].toFixed(6)}, ${wilayah.koordinat[1].toFixed(6)}</span>
-            </div>
-            <div class="wilayah-popup-section">
-              <span class="wilayah-popup-label">LPP RRI</span>
-              <span class="wilayah-popup-value">${wilayah.LPP_RRI}</span>
-            </div>
-            <div class="wilayah-popup-section">
-              <span class="wilayah-popup-label">LPP RRI, Lokal, LPS</span>
-              <span class="wilayah-popup-value">${wilayah.LPP_RRI_Lokal_LPS}</span>
-            </div>
-            <div class="wilayah-popup-section">
-              <span class="wilayah-popup-badge ${wilayah.status.toLowerCase() !== 'aktif' ? 'inactive' : ''}">${wilayah.status}</span>
-            </div>
-          </div>`,
+      <div class="wilayah-popup-header">
+        ${wilayah.nama}
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">Kota/Kabupaten</span>
+        <span class="wilayah-popup-value">${wilayah.kota_kab}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">Koordinat</span>
+        <span class="wilayah-popup-value">${wilayah.koordinat[0].toFixed(6)}, ${wilayah.koordinat[1].toFixed(6)}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">LPP RRI</span>
+        <span class="wilayah-popup-value">${wilayah.LPP_RRI}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-label">LPP RRI, Lokal, LPS</span>
+        <span class="wilayah-popup-value">${wilayah.LPP_RRI_Lokal_LPS}</span>
+      </div>
+      
+      <div class="wilayah-popup-section">
+        <span class="wilayah-popup-badge ${wilayah.status.toLowerCase() !== 'aktif' ? 'inactive' : ''}">${wilayah.status}</span>
+      </div>
+      
+    
+    </div>`,
           {
             className: "wilayah-popup",
             maxWidth: 320
@@ -2343,7 +2299,9 @@
         );
       });
 
-      // ------------------- ICONS -------------------
+
+
+      // Define icons
       const defaultIcon = L.icon({
         iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
         iconSize: [25, 41],
@@ -2352,7 +2310,7 @@
       });
 
       const pemancarIcon = L.icon({
-        iconUrl: '/images/icon-pemancar.png',
+        iconUrl: '/images/icon-pemancar.png', // Adjust path as needed
         iconSize: [50, 50],
         iconAnchor: [14, 28],
         popupAnchor: [0, -26]
@@ -2366,44 +2324,85 @@
       });
 
       const highlightedPemancarIcon = L.icon({
-        iconUrl: '/images/icon-pemancar2.png',
+        iconUrl: '/images/icon-pemancar2.png', // Adjust path as needed
         iconSize: [70, 70],
         iconAnchor: [19, 38],
         popupAnchor: [0, -36]
       });
 
-      // -------------- MARKER GROUPS ---------------
+
+      // Marker groups
       var markerGroups = {};
 
-      // =============== PENGUKURAN MARKERS ===============
+      // Add pengukuran markers
       @foreach($pengukurans as $item)
       @if($item->pengukuranFrekuensi && $item->pengukuranFrekuensi->latitude && $item->pengukuranFrekuensi->longitude)
       var lat = {{ $item->pengukuranFrekuensi->latitude }};
       var lng = {{ $item->pengukuranFrekuensi->longitude }};
-      var groupId = {{ $item->lokasi_pemancar_id ?? 'null' }};
+      var groupId = {{ $item->lokasi_pemancar_id ?? 'null' }}; // Adjust based on actual relationship, e.g., $item->data_isr->lokasiPemancar->id
       if (groupId !== null) {
       var tahun = '{{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}';
 
+
+      // Sudah di atas, setiap marker pengukuran:
+      if (!window.allMarkers) window.allMarkers = [];
       var marker = L.marker([lat, lng], {
       kota: '{{ $item->pengukuranFrekuensi->location_id ?? "-" }}',
       tahun: tahun,
       originalIcon: defaultIcon,
-      type: 'pengukuran',
-      groupId: groupId // PENTING! agar highlightGroup() bisa dipanggil
+      type: 'pengukuran'
       }).addTo(map);
-
       window.allMarkers.push(marker);
 
+      // Lalu setelah semua marker dibuat, tambahkan fungsi filter ini:
+      function filterMapMarkers() {
+      const kota = (document.getElementById("filterKota")?.value || "").trim();
+      const tahun = (document.getElementById("filterTahun")?.value || "").trim();
+      window.allMarkers.forEach(marker => {
+      const cocokKota = kota === "" || String(marker.options.kota) === kota;
+      const cocokTahun = tahun === "" || String(marker.options.tahun) === tahun;
+      if (cocokKota && cocokTahun) {
+        if (!map.hasLayer(marker)) map.addLayer(marker);
+      } else {
+        if (map.hasLayer(marker)) map.removeLayer(marker);
+      }
+      });
+      }
+
+      document.getElementById("filterKota").addEventListener("change", filterMapMarkers);
+      document.getElementById("filterTahun").addEventListener("change", filterMapMarkers);
+      filterMapMarkers();
+
+
+      // Simpan ke array marker custom, misal:
       if (!window.markersByTahun) window.markersByTahun = [];
       window.markersByTahun.push(marker);
       marker.setIcon(defaultIcon);
+
+
+      function filterMarkersByTahun(selectedTahun) {
+      window.markersByTahun.forEach(marker => {
+      if (!selectedTahun || marker.options.tahun === selectedTahun) {
+        marker.addTo(map);    // Tampilkan marker
+      } else {
+        map.removeLayer(marker); // Sembunyikan marker
+      }
+      });
+      }
+
+      // Tambahkan event listener ke filter tahun:
+      filterTahun.addEventListener('change', function () {
+      const tahunDipilih = filterTahun.value.trim();
+      filterMarkersByTahun(tahunDipilih);
+      });
+
 
       var popupContent = `
       <div class="p-4 bg-gradient-to-br from-white to-blue-50 rounded-lg shadow-inner">
       <div class="flex items-center justify-between mb-3 pb-2 border-b border-blue-100">
       <h3 class="font-bold text-lg text-blue-700 flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
       </svg>
       {{ $item->data_isr->no_isr ?? 'Tidak ada ISR' }}
       </h3>
@@ -2411,65 +2410,72 @@
       {{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}
       </span>
       </div>
+
       <div class="grid grid-cols-2 gap-2 mb-3">
       <div class="bg-blue-50 rounded-lg p-2">
       <div class="text-xs text-blue-500 font-medium mb-1">Frekuensi</div>
-      <div class="font-bold text-gray-800">{{ $item->PengukuranFrekuensi->frekuensi_terukur_mhz ?? '-' }} <span class="text-xs font-normal text-gray-500">MHz</span></div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }} <span class="text-xs font-normal text-gray-500">MHz</span></div>
       </div>
+
       <div class="bg-blue-50 rounded-lg p-2">
       <div class="text-xs text-blue-500 font-medium mb-1">Bandwidth</div>
-      <div class="font-bold text-gray-800">{{ $item->PengukuranFrekuensi->bandwidth_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->bandwidth_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
       </div>
+
       <div class="bg-blue-50 rounded-lg p-2">
       <div class="text-xs text-blue-500 font-medium mb-1">Daya</div>
-      <div class="font-bold text-gray-800">{{ $item->PengukuranFrekuensi->output_power_tx ?? '-' }} <span class="text-xs font-normal text-gray-500">W</span></div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->output_power_tx ?? '-' }} <span class="text-xs font-normal text-gray-500">W</span></div>
       </div>
+
       <div class="bg-blue-50 rounded-lg p-2">
       <div class="text-xs text-blue-500 font-medium mb-1">Deviasi</div>
-      <div class="font-bold text-gray-800">{{ $item->PengukuranFrekuensi->deviasi_frekuensi_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
+      <div class="font-bold text-gray-800">{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }} <span class="text-xs font-normal text-gray-500">kHz</span></div>
       </div>
       </div>
+
       <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-3 mb-3">
       <div class="text-xs text-indigo-600 font-medium mb-2">Harmonisa</div>
       <div class="flex justify-between items-center">
       <div class="flex flex-col items-center">
-        <span class="text-xs text-gray-500 mb-1">H-1</span>
-        <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $item->PengukuranFrekuensi->level_h1_dbm ?? '-' }} dBm</span>
+      <span class="text-xs text-gray-500 mb-1">H-1</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h1_dbm ?? '-' }} dBm</span>
       </div>
       <div class="flex flex-col items-center">
-        <span class="text-xs text-gray-500 mb-1">H-2</span>
-        <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $item->PengukuranFrekuensi->level_h2_dbm ?? '-' }} dBm</span>
+      <span class="text-xs text-gray-500 mb-1">H-2</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h2_dbm ?? '-' }} dBm</span>
       </div>
       <div class="flex flex-col items-center">
-        <span class="text-xs text-gray-500 mb-1">H-3</span>
-        <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $item->PengukuranFrekuensi->level_h3_dbm ?? '-' }} dBm</span>
+      <span class="text-xs text-gray-500 mb-1">H-3</span>
+      <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded-md font-medium text-sm">{{ $pengukuranPertama->level_h3_dbm ?? '-' }} dBm</span>
       </div>
       </div>
       </div>
+
       <div class="flex items-center justify-between mb-2">
       <div>
       <span class="text-xs text-gray-500">Kanal:</span>
-      <span class="ml-1 font-medium">{{ $item->PengukuranFrekuensi->kanal ?? '-' }}</span>
+      <span class="ml-1 font-medium">{{ $pengukuranPertama->kanal ?? '-' }}</span>
       </div>
       </div>
+
       <button onclick="showDetail(
       '{{ $item->data_isr->no_isr ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->frekuensi_terukur_mhz ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->bandwidth_khz ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->output_power_tx ?? '-' }}',
+      '{{ $pengukuranPertama->frekuensi_terukur_mhz ?? '-' }}',
+      '{{ $pengukuranPertama->bandwidth_khz ?? '-' }}',
+      '{{ $pengukuranPertama->output_power_tx ?? '-' }}',
       '{{ $item->LokasiPemancar->latitude ?? '-' }}',
       '{{ $item->LokasiPemancar->longitude ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->level_h1_dbm ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->level_h2_dbm ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->level_h3_dbm ?? '-' }}',
+      '{{ $pengukuranPertama->level_h1_dbm ?? '-' }}',
+      '{{ $pengukuranPertama->level_h2_dbm ?? '-' }}',
+      '{{ $pengukuranPertama->level_h3_dbm ?? '-' }}',
       '{{ $item->LokasiPemancar->alamat ?? '-' }}',
       '{{ $item->LokasiPemancar->location_id ?? '-' }}',
       '{{ $item->LokasiPemancar->kecamatan ?? '-' }}',
       '{{ $item->LokasiPemancar->kelurahan ?? '-' }}',
       '{{ \Carbon\Carbon::parse($item->data_isr->tanggal)->translatedFormat("d F Y") ?? "-" }}',
-      '{{ $item->PengukuranFrekuensi->field_strength ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->deviasi_frekuensi_khz ?? '-' }}',
-      '{{ $item->PengukuranFrekuensi->catatan ?? '-' }}'
+      '{{ $pengukuranPertama->field_strength ?? '-' }}',
+      '{{ $pengukuranPertama->deviasi_frekuensi_khz ?? '-' }}',
+      '{{ $pengukuranPertama->catatan ?? '-' }}'
       )" class="w-full mt-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg hover:from-blue-700 hover:to-blue-600 transition-all duration-200 font-medium flex items-center justify-center shadow-md">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
       <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
@@ -2478,7 +2484,7 @@
       Lihat Detail
       </button>
       </div>
-      `;
+    `;
 
       marker.bindPopup(popupContent, {
       className: "pengukuran-popup",
@@ -2487,6 +2493,8 @@
       autoPan: true,
       autoPanPadding: [40, 40]
       });
+
+
 
       if (!markerGroups[groupId]) markerGroups[groupId] = [];
       markerGroups[groupId].push(marker);
@@ -2498,7 +2506,7 @@
     @endif
     @endforeach
 
-      // =============== LOKASI PEMANCAR MARKERS ===============
+      // Add lokasiPemancar markers
       @foreach ($lokasiPemancars as $lp)
       @if ($lp->latitude && $lp->longitude)
       var lpLat = {{ $lp->latitude }};
@@ -2506,24 +2514,23 @@
       var groupId = {{ $lp->id }};
       var lpMarker = L.marker([lpLat, lpLng], {
       groupId: groupId,
-      kota: '{{ $lp->location_id }}',
       type: 'lokasiPemancar',
       originalIcon: pemancarIcon,
-      tahun: '{{ \Carbon\Carbon::parse($lp->created_at)->format('Y') }}'
-      }).addTo(map);
 
+      tahun: '{{ \Carbon\Carbon::parse($lp->created_at)->format('Y') }}' // ← Tambahkan ini!
+      }).addTo(map);
       lpMarker.setIcon(pemancarIcon);
-      window.allMarkers.push(lpMarker);
 
       if (!window.markersByTahun) window.markersByTahun = [];
       window.markersByTahun.push(lpMarker);
+
 
       var lpPopup = `
       <div class="p-4 bg-gradient-to-br from-white to-red-50 rounded-lg shadow-inner">
       <div class="flex items-center justify-between mb-3 pb-2 border-b border-red-100">
       <h3 class="font-bold text-lg text-red-700 flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
+      <path d="M5.5 16a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 16h-8z" />
       </svg>
       Stasiun Pemancar
       </h3>
@@ -2531,42 +2538,47 @@
       {{ \Carbon\Carbon::parse($item->created_at)->format('Y') }}
       </span>
       </div>
+
       <div class="mb-3 bg-red-50 rounded-lg p-3">
       <div class="text-xs text-red-500 font-medium mb-1">Alamat Lengkap</div>
       <p class="font-medium text-gray-800">{{ $lp->alamat ?? '-' }}</p>
       </div>
+
       <div class="grid grid-cols-2 gap-2 mb-3">
       <div class="bg-red-50/70 rounded-lg p-2">
       <div class="text-xs text-red-500 font-medium mb-1">Kelurahan</div>
       <div class="font-bold text-gray-800">{{ $lp->kelurahan ?? '-' }}</div>
       </div>
+
       <div class="bg-red-50/70 rounded-lg p-2">
       <div class="text-xs text-red-500 font-medium mb-1">Kecamatan</div>
       <div class="font-bold text-gray-800">{{ $lp->kecamatan ?? '-' }}</div>
       </div>
       </div>
+
       <div class="grid grid-cols-2 gap-2">
       <div class="bg-red-50/70 rounded-lg p-2">
       <div class="text-xs text-red-500 font-medium mb-1">Koordinat</div>
       <div class="font-medium text-gray-800 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
-        </svg>
-        <span class="text-sm">{{ $lp->latitude }}, {{ $lp->longitude }}</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+      </svg>
+      <span class="text-sm">{{ $lp->latitude }}, {{ $lp->longitude }}</span>
       </div>
       </div>
+
       <div class="bg-red-50/70 rounded-lg p-2">
       <div class="text-xs text-red-500 font-medium mb-1">Tinggi MDPL</div>
       <div class="font-bold text-gray-800 flex items-center">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-        </svg>
-        {{ $lp->tinggi_lokasi_mdpl ?? '-' }} m
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+      </svg>
+      {{ $lp->tinggi_lokasi_mdpl ?? '-' }} m
       </div>
       </div>
       </div>
       </div>
-      `;
+    `;
 
       lpMarker.bindPopup(lpPopup);
 
@@ -2579,7 +2591,7 @@
     @endif
     @endforeach
 
-      // =============== HIGHLIGHT FUNCTION ===============
+      // Highlight function
       function highlightGroup(groupId) {
         // Reset all markers
         for (var id in markerGroups) {
@@ -2598,9 +2610,6 @@
           });
         }
       }
-
-      // ==== Filter marker sekali setelah semua marker di-push ====
-      filterMapMarkers();
 
       setTimeout(() => map.invalidateSize(), 100);
       window.addEventListener('resize', () => {
@@ -2629,30 +2638,46 @@
         showMapBtn.style.backgroundColor = "#006DB0";
       });
 
+      // Default tampilkan map
       hideAllContainers();
       mapContainer.classList.remove("hidden");
 
+      // Hapus loading animation setelah halaman selesai dimuat
       setTimeout(() => {
         document.querySelector('.loading-animation').style.display = 'none';
       }, 800);
     });
 
-    // =============== DETAIL MODAL ===============
+    // Detail Modal Functions
     function showDetail(noIsr, frekuensi, bandwidth, daya, lat, lng, h1, h2, h3, alamat, kota, kecamatan, kelurahan, tanggalUkur, fieldStrength, deviasi, catatan) {
+      // Informasi Dasar
       document.getElementById('modalNoISR').innerText = noIsr;
       document.getElementById('modalTanggalUkur').innerText = tanggalUkur;
+
+      // Lokasi Pemancar
       document.getElementById('modalAlamat').innerText = alamat;
       document.getElementById('modalKota').innerText = kota;
       document.getElementById('modalKecamatan').innerText = kecamatan;
       document.getElementById('modalKelurahan').innerText = kelurahan;
       document.getElementById('modalKoordinat').innerText = `${lat}, ${lng}`;
+
+      // Parameter Teknis
       document.getElementById('modalFrekuensi').innerText = `${frekuensi} MHz`;
       document.getElementById('modalBandwidth').innerText = `${bandwidth} kHz`;
       document.getElementById('modalDaya').innerText = `${daya} W`;
       document.getElementById('modalDeviasi').innerText = deviasi && deviasi !== '-' && deviasi !== null ? `${deviasi} kHz` : 'Tidak tersedia';
+
+
+
+
+      // Harmonisa
       document.getElementById('modalH1').innerText = `${h1} dBm`;
       document.getElementById('modalH2').innerText = `${h2} dBm`;
       document.getElementById('modalH3').innerText = `${h3} dBm`;
+
+      // Menghitung persentase untuk progress bar berdasarkan nilai dBm
+      // Asumsi: nilai dBm berkisar antara -120 dBm hingga 0 dBm
+      // Kita konversi ke persentase 0-100%
       const h1Value = parseFloat(h1);
       const h2Value = parseFloat(h2);
       const h3Value = parseFloat(h3);
@@ -2665,15 +2690,20 @@
       const h2Percent = Math.min(100, Math.max(0, ((h2Value - minDbm) / range) * 100));
       const h3Percent = Math.min(100, Math.max(0, ((h3Value - minDbm) / range) * 100));
 
+      // Update progress bars
       document.getElementById('modalH1Bar').style.width = `${h1Percent}%`;
       document.getElementById('modalH2Bar').style.width = `${h2Percent}%`;
       document.getElementById('modalH3Bar').style.width = `${h3Percent}%`;
 
+      // Set class untuk progress bars berdasarkan nilai
       document.getElementById('modalH1Bar').className = `progress-bar ${h1Percent > 70 ? 'high' : h1Percent > 40 ? 'medium' : 'low'}`;
       document.getElementById('modalH2Bar').className = `progress-bar ${h2Percent > 70 ? 'high' : h2Percent > 40 ? 'medium' : 'low'}`;
       document.getElementById('modalH3Bar').className = `progress-bar ${h3Percent > 70 ? 'high' : h3Percent > 40 ? 'medium' : 'low'}`;
 
+      // Catatan
       document.getElementById('modalCatatan').innerText = catatan || 'Tidak ada catatan';
+
+      // Tampilkan modal
       document.getElementById('detailModal').classList.remove('hidden');
     }
 
@@ -2681,8 +2711,6 @@
       document.getElementById('detailModal').classList.add('hidden');
     }
   </script>
-
-
 </body>
 
 </html>

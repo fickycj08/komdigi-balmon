@@ -664,7 +664,7 @@
                 <div class="flex items-center justify-center w-8 h-8 text-emerald-600 bg-emerald-100 rounded-lg mr-3">
                   <x-heroicon-o-arrow-trending-up class="w-5 h-5" />
                 </div>
-                <span class="text-base font-medium">Pengukuran</span>
+                <span class="text-base font-medium">Pengukuran FM</span>
               </a>
             </li>
 
@@ -702,43 +702,68 @@
       </div>
 
       <!-- Tombol Logout -->
-      <div class="p-3 mt-2">
-        <a href="#"
-          class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1">
-          <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
-          <span class="text-base font-medium">Logout</span>
-        </a>
-      </div>
+       <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="inline">
+    @csrf
+    <button type="submit"
+        class="flex items-center justify-center p-3 bg-gradient-to-r from-red-600 to-red-500 text-white rounded-xl shadow-md hover:from-red-700 hover:to-red-600 transition-all transform hover:-translate-y-1 w-full">
+        <x-heroicon-s-arrow-right-on-rectangle class="w-5 h-5 mr-2" />
+        <span class="text-base font-medium">Logout</span>
+    </button>
+</form>
     </aside>
 
     <!-- Main Content -->
     <main class="flex-1 p-8 min-h-screen main-content md:ml-[100px] md:mr-[100px] pt-[130px]">
       <!-- Container untuk Filter -->
       <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border border-gray-100">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl text-[#006DB0] font-bold flex items-center">
-            <x-heroicon-s-funnel class="w-5 h-5 mr-2" />
-            Filter Data
-          </h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl text-[#006DB0] font-bold flex items-center">
+      <x-heroicon-s-funnel class="w-5 h-5 mr-2" />
+      Filter Data
+    </h2>
+  </div>
+
+  <!-- Grid 2 Kolom -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Filter Tahun -->
+    <div class="relative">
+      <label for="filterTahun" class="block text-gray-700 text-sm font-medium mb-2">Tahun:</label>
+      <div class="relative">
+        <select id="filterTahun"
+          class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
+          <option value="">Semua Tahun</option>
+          @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
+          <option value="{{ $tahun }}">{{ $tahun }}</option>
+          @endfor
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <x-heroicon-s-chevron-down class="w-5 h-5" />
         </div>
+      </div>
+    </div>
+    <!-- Filter Kota/Kabupaten -->
+    <div class="relative">
+      <label for="filterKota" class="block text-gray-700 text-sm font-medium mb-2">Kota/Kabupaten:</label>
+      <div class="relative">
+        <select id="filterKota"
+          class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
+          <option value="">Semua Kota/Kabupaten</option>
+          @php
+            $daftarKota = collect($monitoring)->pluck('location.kota')->unique()->sort()->filter();
+          @endphp
+          @foreach ($daftarKota as $kota)
+          <option value="{{ $kota }}">{{ $kota }}</option>
+          @endforeach
+        </select>
+        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+          <x-heroicon-s-chevron-down class="w-5 h-5" />
+        </div>
+      </div>
+    </div>
+  </div>
 
-      
 
-          <div class="relative">
-            <label for="filterTahun" class="block text-gray-700 text-sm font-medium mb-2">Tahun:</label>
-            <div class="relative">
-              <select id="filterTahun"
-                class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
-                <option value="">Semua Tahun</option>
-                @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
-                <option value="{{ $tahun }}">{{ $tahun }}</option>
-                @endfor
-              </select>
-              <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <x-heroicon-s-chevron-down class="w-5 h-5" />
-              </div>
-            </div>
-          </div>
+
 
           
       </div>
@@ -753,17 +778,28 @@
           </h2>
 
           <div class="flex space-x-3" id="toggleButtons">
-            <button id="showMap"
-              class="px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
-              <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
-              Tampilkan Maps
-            </button>
-            <button id="showTable"
-              class="px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px]">
-              <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
-              Tampilkan Data Monitoring
-            </button>
-          </div>
+  <button id="showMap"
+    class="relative px-5 py-2.5 bg-[#EDBC1B] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
+    type="button">
+    <x-heroicon-s-globe-alt class="w-5 h-5 mr-2" />
+    Tampilkan Maps
+    <!-- Tooltip -->
+    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
+      Visualisasi data monitoring dalam bentuk peta interaktif
+    </span>
+  </button>
+  <button id="showTable"
+    class="relative px-5 py-2.5 bg-[#006DB0] text-white rounded-lg transition-all duration-200 font-medium flex items-center shadow-md hover:shadow-lg transform hover:translate-y-[-2px] group"
+    type="button">
+    <x-heroicon-s-table-cells class="w-5 h-5 mr-2" />
+    Tampilkan Data Tabel
+    <!-- Tooltip -->
+    <span class="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 px-3 py-2 bg-black text-xs text-white rounded-md opacity-0 group-hover:opacity-100 transition pointer-events-none whitespace-nowrap z-20 shadow-lg">
+      Lihat data monitoring dalam bentuk tabel
+    </span>
+  </button>
+</div>
+
         </div>
 
         <!-- Map Container -->
@@ -815,7 +851,8 @@
                     <td class="p-3 text-sm md:text-base">
                       <div class="flex items-center">
                         <x-heroicon-s-map-pin class="w-4 h-4 text-red-500 mr-1 flex-shrink-0" />
-                        <span>{{ $item->kab_kota }}</span>
+                        <span>{{ $item->location->kota ?? '-' }}</span>
+
                       </div>
                     </td>
                     <td class="p-3 text-sm md:text-base">
@@ -850,7 +887,8 @@
                         '{{ $item->upt }}',
                         '{{ $item->stasiun_monitor }}',
                         '{{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}',
-                        '{{ $item->kab_kota }}',
+                        '{{ $item->location->kota}}',
+
                         '{{ $item->alamat }}',
                         '{{ $item->lat }}',
                         '{{ $item->lng }}',
@@ -1155,7 +1193,9 @@
             item.upt,
             item.stasiun_monitor,
             new Date(item.tanggal).toLocaleDateString('id-ID'),
-            item.kab_kota,
+            item.location?.kota ?? '-',
+
+
             item.alamat,
             item.lat,
             item.lng,
@@ -1222,33 +1262,44 @@
     // === FILTER TABLE + MAP ===
     const filterTahun = document.getElementById("filterTahun");
     const monitoringRows = document.querySelectorAll("#tableContainer tbody tr");
+    const filterKota = document.getElementById("filterKota"); // Tambahan
 
     function applyFilters() {
       const selectedTahun = filterTahun.value.trim();
+       const selectedKota = filterKota.value.trim().toLowerCase();
 
       // 1) Filter baris tabel
       monitoringRows.forEach(row => {
-        const tahunRow = row.cells[2].textContent.trim().slice(-4); // dd-mm-YYYY
-        row.style.display = (!selectedTahun || tahunRow === selectedTahun)
-          ? "" : "none";
-      });
+    // Ambil tahun (kolom tanggal) dan kota (kolom kota)
+    const tahunRow = row.cells[2].textContent.trim().slice(-4); // Tanggal
+    const kotaRow = row.cells[3].textContent.trim().toLowerCase(); // Kota
+    // Filter dua-duanya
+    const matchTahun = !selectedTahun || tahunRow === selectedTahun;
+    const matchKota = !selectedKota || kotaRow === selectedKota;
 
-      // 2) Filter marker di map
-      allMarkers.forEach(({ marker, tahun }) => {
-        if (!selectedTahun || tahun === selectedTahun) {
-          // tampilkan
-          if (!map.hasLayer(marker)) map.addLayer(marker);
-        } else {
-          // sembunyikan
-          if (map.hasLayer(marker)) map.removeLayer(marker);
-        }
-      });
+    row.style.display = (matchTahun && matchKota) ? "" : "none";
+  });
+
+  // 2) Filter marker di map
+  allMarkers.forEach(({ marker, tahun }, idx) => {
+    // Cari data item yang sesuai
+    const dataItem = monitoringData[idx];
+    const kota = (dataItem.location?.kota || '').toLowerCase();
+    const matchTahun = !selectedTahun || tahun === selectedTahun;
+    const matchKota = !selectedKota || kota === selectedKota;
+
+    if (matchTahun && matchKota) {
+      if (!map.hasLayer(marker)) map.addLayer(marker);
+    } else {
+      if (map.hasLayer(marker)) map.removeLayer(marker);
     }
+  });
+}
 
-    filterTahun.addEventListener("change", applyFilters);
+filterTahun.addEventListener("change", applyFilters);
+filterKota.addEventListener("change", applyFilters); // Jangan lupa ini
 
-    // Apply filter pertama kali (biar sinkron awal)
-    applyFilters();
+applyFilters(); // Biar sinkron awal
   });
 
   // --- Modal Show/Close (tidak diubah) ---
@@ -1353,3 +1404,4 @@
 </html>
 
 
+ 
