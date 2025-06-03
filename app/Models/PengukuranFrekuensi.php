@@ -46,6 +46,8 @@ class PengukuranFrekuensi extends Model
         'foto_pengukuran',
         'dokumen_pendukung',
          'location_id',
+         'spurious_penerbangan',
+'level_spurious',
     ];
 
     protected $casts = [

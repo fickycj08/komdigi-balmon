@@ -1215,151 +1215,154 @@
           </div>
         </div>
 
-        <!-- Popup Detail -->
-<div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 backdrop-blur-sm">
-  <div class="bg-gradient-to-br from-[#f0f9ff] to-[#d2ebff] rounded-2xl shadow-2xl w-full max-w-4xl relative overflow-hidden overflow-y-auto max-h-[90vh]">
-    <!-- Header dengan Gradien dan Icon -->
-    <div class="bg-gradient-to-r from-[#378EC3] to-[#70C1F3] p-6 flex items-center sticky top-0 z-10">
-      <div class="bg-white/20 p-3 rounded-full mr-4">
-        <x-heroicon-o-arrow-trending-up class="w-8 h-8 text-white" />
-      </div>
-      <div>
-        <h2 class="text-2xl font-bold text-white">Detail Pengukuran</h2>
-        <div class="flex items-center mt-1">
-          <p class="text-xs text-white/80 mr-2">Jarak ke Lokasi Pemancar:</p>
-          <p class="font-medium text-white" id="modalJarak"></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Body dengan Grid Responsive -->
-    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Kolom Kiri - Informasi Dasar -->
-      <div class="space-y-4">
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Informasi Dasar</label>
-          <div class="mt-2 space-y-3">
-            <div>
-              <p class="text-xs text-gray-500">Nomor ISR</p>
-              <p class="font-medium text-gray-800" id="modalNoISR"></p>
+        <!-- Modal Detail -->
+        <div id="detailModal"
+          class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 backdrop-blur-sm">
+          <div
+            class="bg-gradient-to-br from-[#f0f9ff] to-[#d2ebff] rounded-2xl shadow-2xl w-full max-w-4xl relative overflow-hidden overflow-y-auto max-h-[90vh]">
+            <!-- Header dengan Gradien dan Icon -->
+            <div class="bg-gradient-to-r from-[#378EC3] to-[#70C1F3] p-6 flex items-center sticky top-0 z-10">
+              <div class="bg-white/20 p-3 rounded-full mr-4">
+                <x-heroicon-o-arrow-trending-up class="w-8 h-8 text-white" />
+              </div>
+              <h2 class="text-2xl font-bold text-white">Detail Pengukuran</h2>
+              <p class="text-xs text-gray-500">Jarak ke Lokasi Pemancar</p>
+              <p class="font-medium" id="modalJarak"></p>
             </div>
-            <div>
-              <p class="text-xs text-gray-500">Tanggal Pengukuran</p>
-              <p class="font-medium text-gray-800" id="modalTanggalUkur"></p>
+
+            <!-- Body dengan Grid Responsive -->
+            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Kolom Kiri - Informasi Dasar -->
+              <div class="space-y-4">
+                <div class="bg-white/80 p-4 rounded-xl shadow-sm">
+                  <label class="text-sm text-[#006DB0] font-semibold">Informasi Dasar</label>
+                  <div class="mt-2 grid grid-cols-1 gap-2">
+                    <div>
+                      <p class="text-xs text-gray-500">Nomor ISR</p>
+                      <p class="font-medium" id="modalNoISR"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Tanggal Pengukuran</p>
+                      <p class="font-medium" id="modalTanggalUkur"></p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-white/80 p-4 rounded-xl shadow-sm">
+                  <label class="text-sm text-[#006DB0] font-semibold">Lokasi Pemancar</label>
+                  <div class="mt-2 grid grid-cols-1 gap-2">
+                    <div>
+                      <p class="text-xs text-gray-500">Alamat</p>
+                      <p class="font-medium" id="modalAlamat"></p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                      <div>
+                        <p class="text-xs text-gray-500">Kota</p>
+                        <p class="font-medium" id="modalKota"></p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-gray-500">Kecamatan</p>
+                        <p class="font-medium" id="modalKecamatan"></p>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Kelurahan</p>
+                      <p class="font-medium" id="modalKelurahan"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Koordinat</p>
+                      <p class="font-medium flex items-center">
+                        <x-heroicon-s-map-pin class="w-4 h-4 text-red-500 mr-1" />
+                        <span id="modalKoordinat"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Kolom Kanan - Detail Pengukuran -->
+              <div class="space-y-4">
+                <div class="bg-white/80 p-4 rounded-xl shadow-sm">
+                  <label class="text-sm text-[#006DB0] font-semibold">Parameter Teknis</label>
+                  <div class="mt-2 grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="text-xs text-gray-500">Frekuensi Terukur</p>
+                      <p class="font-medium text-blue-600" id="modalFrekuensi"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Bandwidth</p>
+                      <p class="font-medium" id="modalBandwidth"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Daya Pancar</p>
+                      <p class="font-medium" id="modalDaya"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">Deviasi Frekuensi</p>
+                      <p class="font-medium" id="modalDeviasi"></p>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div class="bg-white/80 p-4 rounded-xl shadow-sm">
+                  <label class="text-sm text-[#006DB0] font-semibold">Harmonisa</label>
+                  <div class="mt-2 grid grid-cols-3 gap-2">
+                    <div>
+                      <p class="text-xs text-gray-500">H-1</p>
+                      <p class="font-medium" id="modalH1"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">H-2</p>
+                      <p class="font-medium" id="modalH2"></p>
+                    </div>
+                    <div>
+                      <p class="text-xs text-gray-500">H-3</p>
+                      <p class="font-medium" id="modalH3"></p>
+                    </div>
+                  </div>
+                  <div class="mt-4">
+                    <div class="grid grid-cols-3 gap-2">
+                      <div class="col-span-1">
+                        <p class="text-xs text-gray-500">H-1 Level</p>
+                        <div class="mt-1 progress-container">
+                          <div class="progress-bar high" id="modalH1Bar" style="width: 75%"></div>
+                        </div>
+                      </div>
+                      <div class="col-span-1">
+                        <p class="text-xs text-gray-500">H-2 Level</p>
+                        <div class="mt-1 progress-container">
+                          <div class="progress-bar medium" id="modalH2Bar" style="width: 50%"></div>
+                        </div>
+                      </div>
+                      <div class="col-span-1">
+                        <p class="text-xs text-gray-500">H-3 Level</p>
+                        <div class="mt-1 progress-container">
+                          <div class="progress-bar low" id="modalH3Bar" style="width: 25%"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Full-width Section untuk Catatan -->
+              <div class="md:col-span-2 bg-blue-50/80 p-4 rounded-xl shadow-sm">
+                <label class="text-sm text-[#006DB0] font-semibold">Catatan Pengukuran</label>
+                <p class="mt-2 text-gray-700 leading-relaxed" id="modalCatatan"></p>
+              </div>
+            </div>
+
+            <!-- Footer dengan Tombol Aksi -->
+            <div class="bg-gray-50 p-4 flex justify-end space-x-3 border-t sticky bottom-0">
+              <button onclick="closeModal()"
+                class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors">
+                Tutup
+              </button>
+
             </div>
           </div>
         </div>
-
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Lokasi Pemancar</label>
-          <div class="mt-2 space-y-3">
-            <div>
-              <p class="text-xs text-gray-500">Alamat</p>
-              <p class="font-medium text-gray-800" id="modalAlamat"></p>
-            </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <p class="text-xs text-gray-500">Kota</p>
-                <p class="font-medium text-gray-800" id="modalKota"></p>
-              </div>
-              <div>
-                <p class="text-xs text-gray-500">Kecamatan</p>
-                <p class="font-medium text-gray-800" id="modalKecamatan"></p>
-              </div>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Kelurahan</p>
-              <p class="font-medium text-gray-800" id="modalKelurahan"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Koordinat</p>
-              <p class="font-medium text-gray-800 flex items-center">
-                <x-heroicon-s-map-pin class="w-4 h-4 text-red-500 mr-1" />
-                <span id="modalKoordinat"></span>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Kolom Kanan - Detail Pengukuran -->
-      <div class="space-y-4">
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Parameter Teknis</label>
-          <div class="mt-2 grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-xs text-gray-500">Frekuensi Terukur</p>
-              <p class="font-medium text-blue-600" id="modalFrekuensi"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Bandwidth</p>
-              <p class="font-medium text-gray-800" id="modalBandwidth"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Daya Pancar</p>
-              <p class="font-medium text-gray-800" id="modalDaya"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Deviasi Frekuensi</p>
-              <p class="font-medium text-gray-800" id="modalDeviasi"></p>
-            </div>
-          </div>
-        </div>
-
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Harmonisa</label>
-          <div class="mt-2 grid grid-cols-3 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">H-1</p>
-              <p class="font-medium text-gray-800" id="modalH1"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-2</p>
-              <p class="font-medium text-gray-800" id="modalH2"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-3</p>
-              <p class="font-medium text-gray-800" id="modalH3"></p>
-            </div>
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">H-1 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar high" id="modalH1Bar" style="width: 75%"></div>
-              </div>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-2 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar medium" id="modalH2Bar" style="width: 50%"></div>
-              </div>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-3 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar low" id="modalH3Bar" style="width: 25%"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Full-width Section untuk Catatan -->
-      <div class="md:col-span-2 bg-blue-50/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-        <label class="text-sm text-[#006DB0] font-semibold">Catatan Pengukuran</label>
-        <p class="mt-2 text-gray-700 leading-relaxed" id="modalCatatan"></p>
-      </div>
-    </div>
-
-    <!-- Footer dengan Tombol Aksi -->
-    <div class="bg-gray-50 p-4 flex justify-end space-x-3 border-t sticky bottom-0">
-      <button onclick="closeModal()" class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md">
-        Tutup
-      </button>
-    </div>
-  </div>
-</div>
       </div>
     </main>
   </div>

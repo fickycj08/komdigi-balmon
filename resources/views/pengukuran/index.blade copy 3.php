@@ -875,6 +875,79 @@
       overflow-x: auto;
     }
 
+/* Tambahan CSS untuk Modal Detail yang Diperbaiki */
+@keyframes modalEnterImproved {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9) rotateX(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+#detailModal {
+  animation: modalEnterImproved 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Progress Bar dengan Efek Shimmer */
+.progress-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Hover Effects untuk Cards */
+.group:hover .animate-pulse {
+  animation-duration: 0.5s;
+}
+
+/* Floating Animation untuk Particles */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-ping {
+  animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Enhanced Border Animations */
+.border-l-4 {
+  position: relative;
+  overflow: hidden;
+}
+
+.border-l-4::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(to bottom, transparent, currentColor, transparent);
+  transition: height 0.3s ease;
+}
+
+.group:hover .border-l-4::before {
+  height: 100%;
+}
 
     /* CSS Menu Pengukuran END */
   </style>
@@ -1215,130 +1288,211 @@
           </div>
         </div>
 
-        <!-- Popup Detail -->
-<div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 backdrop-blur-sm">
-  <div class="bg-gradient-to-br from-[#f0f9ff] to-[#d2ebff] rounded-2xl shadow-2xl w-full max-w-4xl relative overflow-hidden overflow-y-auto max-h-[90vh]">
+        <!-- Modal Detail -->
+        <!-- Modal Detail -->
+<div id="detailModal"
+  class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 backdrop-blur-sm">
+  <div
+    class="bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] rounded-3xl shadow-2xl w-full max-w-5xl relative overflow-hidden overflow-y-auto max-h-[90vh] border border-white/20">
+    
+    <!-- Animated Background Pattern -->
+    <div class="absolute inset-0 opacity-5">
+      <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-400 via-purple-500 to-indigo-600"></div>
+      <div class="absolute top-0 left-0 w-full h-full" style="background-image: radial-gradient(circle at 25% 25%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(circle at 75% 75%, rgba(59,130,246,0.1) 0%, transparent 50%);"></div>
+    </div>
+
     <!-- Header dengan Gradien dan Icon -->
-    <div class="bg-gradient-to-r from-[#378EC3] to-[#70C1F3] p-6 flex items-center sticky top-0 z-10">
-      <div class="bg-white/20 p-3 rounded-full mr-4">
-        <x-heroicon-o-arrow-trending-up class="w-8 h-8 text-white" />
+    <div class="relative bg-gradient-to-r from-[#1e40af] via-[#3b82f6] to-[#06b6d4] p-8 flex items-center sticky top-0 z-10 border-b border-white/10">
+      <!-- Floating Particles Animation -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute w-2 h-2 bg-white/20 rounded-full animate-ping" style="top: 20%; left: 10%; animation-delay: 0s;"></div>
+        <div class="absolute w-1 h-1 bg-white/30 rounded-full animate-ping" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+        <div class="absolute w-1.5 h-1.5 bg-white/25 rounded-full animate-ping" style="top: 80%; left: 20%; animation-delay: 2s;"></div>
       </div>
-      <div>
-        <h2 class="text-2xl font-bold text-white">Detail Pengukuran</h2>
-        <div class="flex items-center mt-1">
-          <p class="text-xs text-white/80 mr-2">Jarak ke Lokasi Pemancar:</p>
-          <p class="font-medium text-white" id="modalJarak"></p>
+      
+      <div class="relative bg-white/20 backdrop-blur-sm p-4 rounded-2xl mr-6 shadow-lg border border-white/30">
+        <x-heroicon-o-arrow-trending-up class="w-10 h-10 text-white drop-shadow-lg" />
+        <div class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl"></div>
+      </div>
+      
+      <div class="relative">
+        <h2 class="text-3xl font-bold text-white mb-2 drop-shadow-lg">Detail Pengukuran FM</h2>
+        <div class="flex items-center text-white/80 text-sm">
+          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+          </svg>
+          <span class="mr-4">Jarak ke Lokasi Pemancar:</span>
+          <span class="font-semibold text-yellow-200" id="modalJarak"></span>
         </div>
       </div>
+      
+      <!-- Close Button -->
+      <button onclick="closeModal()" class="absolute top-6 right-6 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm border border-white/20">
+        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
     </div>
 
     <!-- Body dengan Grid Responsive -->
-    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="relative p-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+      
       <!-- Kolom Kiri - Informasi Dasar -->
-      <div class="space-y-4">
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Informasi Dasar</label>
-          <div class="mt-2 space-y-3">
-            <div>
-              <p class="text-xs text-gray-500">Nomor ISR</p>
-              <p class="font-medium text-gray-800" id="modalNoISR"></p>
+      <div class="space-y-6">
+        
+        <!-- Card Informasi Dasar -->
+        <div class="group relative bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <div class="w-3 h-3 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full mr-3 animate-pulse"></div>
+              <h3 class="text-lg font-bold text-gray-800">Informasi Dasar</h3>
             </div>
-            <div>
-              <p class="text-xs text-gray-500">Tanggal Pengukuran</p>
-              <p class="font-medium text-gray-800" id="modalTanggalUkur"></p>
+            <div class="grid grid-cols-1 gap-4">
+              <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-xl border-l-4 border-blue-500">
+                <p class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Nomor ISR</p>
+                <p class="font-bold text-lg text-gray-800" id="modalNoISR"></p>
+              </div>
+              <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-xl border-l-4 border-green-500">
+                <p class="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Tanggal Pengukuran</p>
+                <p class="font-bold text-lg text-gray-800" id="modalTanggalUkur"></p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Lokasi Pemancar</label>
-          <div class="mt-2 space-y-3">
-            <div>
-              <p class="text-xs text-gray-500">Alamat</p>
-              <p class="font-medium text-gray-800" id="modalAlamat"></p>
+        <!-- Card Lokasi Pemancar -->
+        <div class="group relative bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+          <div class="absolute inset-0 bg-gradient-to-br from-red-50/50 to-pink-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <div class="w-3 h-3 bg-gradient-to-r from-red-500 to-pink-600 rounded-full mr-3 animate-pulse"></div>
+              <h3 class="text-lg font-bold text-gray-800">Lokasi Pemancar</h3>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div>
-                <p class="text-xs text-gray-500">Kota</p>
-                <p class="font-medium text-gray-800" id="modalKota"></p>
+            <div class="space-y-4">
+              <div class="bg-gradient-to-r from-red-50 to-pink-50 p-4 rounded-xl border-l-4 border-red-500">
+                <p class="text-xs font-semibold text-red-600 uppercase tracking-wider mb-1">Alamat</p>
+                <p class="font-medium text-gray-800 leading-relaxed" id="modalAlamat"></p>
               </div>
-              <div>
-                <p class="text-xs text-gray-500">Kecamatan</p>
-                <p class="font-medium text-gray-800" id="modalKecamatan"></p>
+              <div class="grid grid-cols-2 gap-4">
+                <div class="bg-gradient-to-r from-orange-50 to-red-50 p-3 rounded-xl border-l-4 border-orange-500">
+                  <p class="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-1">Kota</p>
+                  <p class="font-medium text-gray-800" id="modalKota"></p>
+                </div>
+                <div class="bg-gradient-to-r from-yellow-50 to-orange-50 p-3 rounded-xl border-l-4 border-yellow-500">
+                  <p class="text-xs font-semibold text-yellow-600 uppercase tracking-wider mb-1">Kecamatan</p>
+                  <p class="font-medium text-gray-800" id="modalKecamatan"></p>
+                </div>
               </div>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Kelurahan</p>
-              <p class="font-medium text-gray-800" id="modalKelurahan"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Koordinat</p>
-              <p class="font-medium text-gray-800 flex items-center">
-                <x-heroicon-s-map-pin class="w-4 h-4 text-red-500 mr-1" />
-                <span id="modalKoordinat"></span>
-              </p>
+              <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-4 rounded-xl border-l-4 border-purple-500">
+                <p class="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-1">Kelurahan</p>
+                <p class="font-medium text-gray-800" id="modalKelurahan"></p>
+              </div>
+              <div class="bg-gradient-to-r from-teal-50 to-cyan-50 p-4 rounded-xl border-l-4 border-teal-500">
+                <p class="text-xs font-semibold text-teal-600 uppercase tracking-wider mb-1">Koordinat</p>
+                <p class="font-medium text-gray-800 flex items-center">
+                  <x-heroicon-s-map-pin class="w-5 h-5 text-red-500 mr-2 animate-bounce" />
+                  <span id="modalKoordinat"></span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- Kolom Kanan - Detail Pengukuran -->
-      <div class="space-y-4">
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Parameter Teknis</label>
-          <div class="mt-2 grid grid-cols-2 gap-4">
-            <div>
-              <p class="text-xs text-gray-500">Frekuensi Terukur</p>
-              <p class="font-medium text-blue-600" id="modalFrekuensi"></p>
+      <div class="space-y-6">
+        
+        <!-- Card Parameter Teknis -->
+        <div class="group relative bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+          <div class="absolute inset-0 bg-gradient-to-br from-emerald-50/50 to-teal-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <div class="w-3 h-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full mr-3 animate-pulse"></div>
+              <h3 class="text-lg font-bold text-gray-800">Parameter Teknis</h3>
             </div>
-            <div>
-              <p class="text-xs text-gray-500">Bandwidth</p>
-              <p class="font-medium text-gray-800" id="modalBandwidth"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Daya Pancar</p>
-              <p class="font-medium text-gray-800" id="modalDaya"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Deviasi Frekuensi</p>
-              <p class="font-medium text-gray-800" id="modalDeviasi"></p>
+            <div class="grid grid-cols-2 gap-4">
+              <div class="bg-gradient-to-br from-blue-100 to-blue-50 p-4 rounded-xl shadow-inner border border-blue-200">
+                <p class="text-xs font-semibold text-blue-600 uppercase tracking-wider mb-1">Frekuensi Terukur</p>
+                <p class="font-bold text-xl text-blue-700" id="modalFrekuensi"></p>
+              </div>
+              <div class="bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-xl shadow-inner border border-green-200">
+                <p class="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Bandwidth</p>
+                <p class="font-bold text-xl text-green-700" id="modalBandwidth"></p>
+              </div>
+              <div class="bg-gradient-to-br from-purple-100 to-purple-50 p-4 rounded-xl shadow-inner border border-purple-200">
+                <p class="text-xs font-semibold text-purple-600 uppercase tracking-wider mb-1">Daya Pancar</p>
+                <p class="font-bold text-xl text-purple-700" id="modalDaya"></p>
+              </div>
+              <div class="bg-gradient-to-br from-orange-100 to-orange-50 p-4 rounded-xl shadow-inner border border-orange-200">
+                <p class="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-1">Deviasi Frekuensi</p>
+                <p class="font-bold text-xl text-orange-700" id="modalDeviasi"></p>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="bg-white/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-          <label class="text-sm text-[#006DB0] font-semibold">Harmonisa</label>
-          <div class="mt-2 grid grid-cols-3 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">H-1</p>
-              <p class="font-medium text-gray-800" id="modalH1"></p>
+        <!-- Card Harmonisa -->
+        <div class="group relative bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300 hover:scale-[1.02]">
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-50/50 to-purple-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="relative">
+            <div class="flex items-center mb-4">
+              <div class="w-3 h-3 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mr-3 animate-pulse"></div>
+              <h3 class="text-lg font-bold text-gray-800">Harmonisa</h3>
             </div>
-            <div>
-              <p class="text-xs text-gray-500">H-2</p>
-              <p class="font-medium text-gray-800" id="modalH2"></p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-3</p>
-              <p class="font-medium text-gray-800" id="modalH3"></p>
-            </div>
-          </div>
-          <div class="mt-4 grid grid-cols-3 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">H-1 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar high" id="modalH1Bar" style="width: 75%"></div>
+            
+            <!-- Nilai Harmonisa -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+              <div class="text-center bg-gradient-to-br from-red-100 to-red-50 p-4 rounded-xl shadow-inner border border-red-200">
+                <p class="text-xs font-semibold text-red-600 uppercase tracking-wider mb-2">H-1</p>
+                <p class="font-bold text-2xl text-red-700" id="modalH1"></p>
+              </div>
+              <div class="text-center bg-gradient-to-br from-yellow-100 to-yellow-50 p-4 rounded-xl shadow-inner border border-yellow-200">
+                <p class="text-xs font-semibold text-yellow-600 uppercase tracking-wider mb-2">H-2</p>
+                <p class="font-bold text-2xl text-yellow-700" id="modalH2"></p>
+              </div>
+              <div class="text-center bg-gradient-to-br from-green-100 to-green-50 p-4 rounded-xl shadow-inner border border-green-200">
+                <p class="text-xs font-semibold text-green-600 uppercase tracking-wider mb-2">H-3</p>
+                <p class="font-bold text-2xl text-green-700" id="modalH3"></p>
               </div>
             </div>
-            <div>
-              <p class="text-xs text-gray-500">H-2 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar medium" id="modalH2Bar" style="width: 50%"></div>
+            
+            <!-- Progress Bars dengan Animasi -->
+            <div class="space-y-4">
+              <div class="relative">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm font-semibold text-gray-700">H-1 Level</span>
+                  <span class="text-xs text-gray-500">Signal Strength</span>
+                </div>
+                <div class="progress-container relative overflow-hidden">
+                  <div class="progress-bar high relative overflow-hidden" id="modalH1Bar" style="width: 75%">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">H-3 Level</p>
-              <div class="mt-1 progress-container">
-                <div class="progress-bar low" id="modalH3Bar" style="width: 25%"></div>
+              
+              <div class="relative">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm font-semibold text-gray-700">H-2 Level</span>
+                  <span class="text-xs text-gray-500">Signal Strength</span>
+                </div>
+                <div class="progress-container relative overflow-hidden">
+                  <div class="progress-bar medium relative overflow-hidden" id="modalH2Bar" style="width: 50%">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" style="animation-delay: 0.5s;"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="relative">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-sm font-semibold text-gray-700">H-3 Level</span>
+                  <span class="text-xs text-gray-500">Signal Strength</span>
+                </div>
+                <div class="progress-container relative overflow-hidden">
+                  <div class="progress-bar low relative overflow-hidden" id="modalH3Bar" style="width: 25%">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" style="animation-delay: 1s;"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1346,20 +1500,36 @@
       </div>
 
       <!-- Full-width Section untuk Catatan -->
-      <div class="md:col-span-2 bg-blue-50/80 p-4 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-        <label class="text-sm text-[#006DB0] font-semibold">Catatan Pengukuran</label>
-        <p class="mt-2 text-gray-700 leading-relaxed" id="modalCatatan"></p>
+      <div class="lg:col-span-2 group relative bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/50 hover:shadow-xl transition-all duration-300">
+        <div class="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-gray-50/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <div class="relative">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-gradient-to-r from-slate-500 to-gray-600 rounded-full mr-3 animate-pulse"></div>
+            <h3 class="text-lg font-bold text-gray-800">Catatan Pengukuran</h3>
+          </div>
+          <div class="bg-gradient-to-r from-slate-50 to-gray-50 p-6 rounded-xl border-l-4 border-slate-500 shadow-inner">
+            <p class="text-gray-700 leading-relaxed text-base" id="modalCatatan"></p>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Footer dengan Tombol Aksi -->
-    <div class="bg-gray-50 p-4 flex justify-end space-x-3 border-t sticky bottom-0">
-      <button onclick="closeModal()" class="px-6 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors shadow-sm hover:shadow-md">
-        Tutup
+    <div class="relative bg-gradient-to-r from-gray-50 via-white to-gray-50 p-6 flex justify-end space-x-4 border-t border-gray-200 sticky bottom-0">
+      <button onclick="closeModal()"
+        class="group relative px-8 py-3 bg-gradient-to-r from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 border border-gray-300">
+        <span class="relative z-10 flex items-center">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          Tutup
+        </span>
+        <div class="absolute inset-0 bg-gradient-to-r from-white/50 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200"></div>
       </button>
     </div>
   </div>
 </div>
+
       </div>
     </main>
   </div>

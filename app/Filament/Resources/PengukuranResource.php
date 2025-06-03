@@ -247,7 +247,7 @@ class PengukuranResource extends Resource
 
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('frekuensi_h1_mhz')->label('Frekuensi H1 (MHz)')->numeric(),
-                                        
+
                                         TextInput::make('frekuensi_h2_mhz')->label('Frekuensi H2 (MHz)')->numeric(),
                                         TextInput::make('frekuensi_h3_mhz')->label('Frekuensi H3 (MHz)')->numeric(),
                                     ]),
@@ -255,9 +255,19 @@ class PengukuranResource extends Resource
                                     Forms\Components\Grid::make(3)->schema([
                                         TextInput::make('level_h1_dbm')->label('Level H1 (dBm)')->numeric(),
                                         TextInput::make('level_h2_dbm')->label('Level H2 (dBm)')->numeric(),
-                                        
                                         TextInput::make('level_h3_dbm')->label('Level H3 (dBm)')->numeric(),
                                     ]),
+
+                                    Forms\Components\Grid::make(2)->schema([
+                                        TextInput::make('spurious_penerbangan')
+                                            ->label('Spurious Penerbangan')
+                                            ->maxLength(255),
+                                        TextInput::make('level_spurious')
+                                            ->label('Level Spurious')
+                                            ->maxLength(255),
+                                    ]),
+
+
                                 ])
                         ]),
 

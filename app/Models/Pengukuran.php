@@ -19,6 +19,8 @@ class Pengukuran extends Model
         'pengukuran_studio_id',
         'tanggal_pengukuran',
         'catatan',
+        
+
     ];
     public function data_isr()
     {

@@ -627,20 +627,10 @@
 
         <!-- Menu -->
         <nav>
-          <div class="px-4 py-2 mb-2">
-            <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Dashboard</h3>
-          </div>
+         
 
           <ul class="space-y-1 px-2">
-            <li>
-              <a href="#"
-                class="flex items-center p-3 text-gray-700 rounded-xl hover:bg-blue-50 group transition-colors">
-                <div class="flex items-center justify-center w-8 h-8 text-blue-600 bg-blue-100 rounded-lg mr-3">
-                  <x-heroicon-s-home class="w-5 h-5" />
-                </div>
-                <span class="text-base font-medium">Beranda</span>
-              </a>
-            </li>
+            
 
             <div class="border-t border-gray-100 my-4"></div>
 
@@ -731,7 +721,7 @@
       <div class="relative">
         <select id="filterTahun"
           class="block w-full bg-gray-50 border border-gray-300 text-gray-700 py-3 px-4 pr-8 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none transition-colors">
-          <option value="">Semua Tahun</option>
+          
           @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
           <option value="{{ $tahun }}">{{ $tahun }}</option>
           @endfor
@@ -810,11 +800,18 @@
         <!-- Table Container -->
         <div id="tableContainer" class="bg-white shadow-lg rounded-lg p-6 table-container overflow-hidden">
           <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl md:text-3xl font-bold text-[#006DB0]">Data Monitoring</h1>
-            <div class="flex space-x-2">
-             
-            </div>
-          </div>
+  <h1 class="text-2xl md:text-3xl font-bold text-[#006DB0] flex items-center">
+    Data Monitoring
+    <span id="kotaCapaianBadge"
+      class="ml-3 inline-block bg-[#EDBC1B] text-white font-semibold rounded-full px-4 py-1 text-sm shadow-sm">
+      Kota/Kabupaten Tercover: 0/22 (0%)
+    </span>
+  </h1>
+  <div class="flex space-x-2">
+    <!-- Tombol lain di sini -->
+  </div>
+</div>
+
 
           <div class="overflow-hidden rounded-xl shadow-md border border-gray-100">
             <div class="overflow-x-auto">
@@ -1300,6 +1297,60 @@ filterTahun.addEventListener("change", applyFilters);
 filterKota.addEventListener("change", applyFilters); // Jangan lupa ini
 
 applyFilters(); // Biar sinkron awal
+
+
+const kotaFix = [
+  "Bandung",
+  "Bandung Barat",
+  "Ciamis",
+  "Cianjur",
+  "Cirebon",
+  "Garut",
+  "Indramayu",
+  "Karawang",
+  "Kota Bandung",
+  "Kota Banjar",
+  "Kota Cimahi",
+  "Kota Cirebon",
+  "Kota Sukabumi",
+  "Kota Tasikmalaya",
+  "Kuningan",
+  "Majalengka",
+  "Pangandaran",
+  "Purwakarta",
+  "Subang",
+  "Sukabumi",
+  "Sumedang",
+  "Tasikmalaya"
+];
+
+const kotaCapaianBadge = document.getElementById("kotaCapaianBadge");
+
+function updateKotaCapaian() {
+  const selectedTahun = filterTahun.value.trim();
+  // Ambil semua data monitoring hasil filter tahun
+  const filtered = monitoringData.filter(item => {
+    const tahunItem = new Date(item.tanggal).getFullYear().toString();
+    return !selectedTahun || tahunItem === selectedTahun;
+  });
+  // Ambil nama kota unik dari hasil filter
+  const kotaUnik = new Set(filtered.map(item => item.location?.kota).filter(Boolean));
+  // Cek yang match di list fix (biar gak masuk kota typo)
+  let count = 0;
+  kotaFix.forEach(kota => {
+    if (kotaUnik.has(kota)) count++;
+  });
+  const percent = kotaFix.length === 0 ? 0 : Math.round(count / kotaFix.length * 100);
+
+  // Update badge
+  kotaCapaianBadge.innerText = `Kota/Kabupaten Tercover: ${count}/22 (${percent}%)`;
+}
+// Panggil tiap kali filter berubah
+filterTahun.addEventListener("change", updateKotaCapaian);
+filterKota.addEventListener("change", updateKotaCapaian);
+updateKotaCapaian(); // Panggil awal
+
+console.log(monitoringData);
   });
 
   // --- Modal Show/Close (tidak diubah) ---
